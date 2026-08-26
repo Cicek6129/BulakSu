@@ -1,4 +1,4 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@500;600&display=swap');
 
 /* ==========================================================================
    BulakSu Yönetim — v4 (Simplified / Kiosk-aligned)
@@ -428,6 +428,50 @@ body.admin-mode {
   margin-left: auto;
 }
 .admin-btn-excel:hover { background: #059669; }
+
+/* Sipariş Tipi Filtre Butonları */
+.tip-filter-bar {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.tip-filter-btn {
+  padding: 0.65rem 1.5rem;
+  border-radius: 100px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: 1px solid var(--admin-border);
+  background: var(--admin-surface);
+  color: var(--admin-text-muted);
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: var(--admin-shadow-sm);
+}
+
+.tip-filter-btn:hover {
+  background: #f8fafc;
+  color: var(--admin-text-main);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.tip-filter-btn.active {
+  background: var(--admin-primary);
+  color: white;
+  border-color: var(--admin-primary);
+  box-shadow: 0 4px 12px rgba(17, 89, 79, 0.2);
+}
+
+/* Specific colors for specific types when active */
+.tip-filter-btn.tip-servis.active { background: var(--admin-primary); border-color: var(--admin-primary); box-shadow: 0 4px 12px rgba(17, 89, 79, 0.25); }
+.tip-filter-btn.tip-gelal.active { background: var(--admin-accent); border-color: var(--admin-accent); box-shadow: 0 4px 12px rgba(225, 85, 43, 0.25); }
+.tip-filter-btn.tip-toptan.active { background: var(--admin-gold); border-color: var(--admin-gold); box-shadow: 0 4px 12px rgba(185, 134, 46, 0.25); }
 
 /* ---------------------------------- Order rows (simplified tickets) ---------------------------------- */
 

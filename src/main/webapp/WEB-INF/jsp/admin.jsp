@@ -1,4 +1,4 @@
-﻿<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
@@ -9,7 +9,7 @@
     <title>Yönetim Paneli - BulakSu</title>
     <!-- Common styles for variables, then admin specific -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css?v=3">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin.css?v=6">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin.css?v=7">
 </head>
 <body class="admin-mode">
     <div class="bg-particles">
@@ -65,6 +65,8 @@
         </div>
 
         <form action="${pageContext.request.contextPath}/admin" method="GET" class="filter-section" id="filterForm">
+            <input type="hidden" name="siparisTipi" id="siparisTipiInput" value="${siparisTipi}">
+            
             <div class="filter-group">
                 <label for="subeId">Şube Filtresi</label>
                 <select name="subeId" id="subeId" class="admin-select" onchange="this.form.submit()">
@@ -90,6 +92,22 @@
                 Excel'e Aktar
             </button>
         </form>
+
+        <%-- Sipariş Tipi Filtre Butonları --%>
+        <div class="tip-filter-bar">
+            <button type="button" class="tip-filter-btn ${empty siparisTipi ? 'active' : ''}" onclick="filterByTip('')">
+                Tümü
+            </button>
+            <button type="button" class="tip-filter-btn tip-servis ${siparisTipi == 'S' ? 'active' : ''}" onclick="filterByTip('S')">
+                🚚 Servis
+            </button>
+            <button type="button" class="tip-filter-btn tip-gelal ${siparisTipi == 'G' ? 'active' : ''}" onclick="filterByTip('G')">
+                🏠 Gel Al
+            </button>
+            <button type="button" class="tip-filter-btn tip-toptan ${siparisTipi == 'T' ? 'active' : ''}" onclick="filterByTip('T')">
+                📦 Toptan
+            </button>
+        </div>
 
         <div class="ticket-grid">
             <c:forEach items="${siparisler}" var="siparis">
@@ -156,18 +174,25 @@
     </main>
 
     <script>
+        function filterByTip(tip) {
+            document.getElementById('siparisTipiInput').value = tip;
+            document.getElementById('filterForm').submit();
+        }
+
         function exportExcel() {
             const form = document.getElementById('filterForm');
             const subeId = form.subeId ? form.subeId.value : '';
             const bas = form.baslangicTarih ? form.baslangicTarih.value : '';
             const bit = form.bitisTarih ? form.bitisTarih.value : '';
             const stokDurum = form.stokDurum ? form.stokDurum.value : '';
+            const siparisTipi = form.siparisTipi ? form.siparisTipi.value : '';
 
             const params = new URLSearchParams();
             if(subeId) params.append('subeId', subeId);
             if(bas) params.append('baslangicTarih', bas);
             if(bit) params.append('bitisTarih', bit);
             if(stokDurum) params.append('stokDurum', stokDurum);
+            if(siparisTipi) params.append('siparisTipi', siparisTipi);
 
             window.location.href = '${pageContext.request.contextPath}/admin/excel?' + params.toString();
         }

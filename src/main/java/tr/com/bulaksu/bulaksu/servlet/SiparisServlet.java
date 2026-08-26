@@ -85,6 +85,30 @@ public class SiparisServlet extends HttpServlet {
             List<SiparisDetay> detaylar = new ArrayList<>();
             BigDecimal toplamTutar = BigDecimal.ZERO;
             
+            // ÖNCELİKLE STOK KONTROLÜ YAP — yetersiz stok varsa siparişi reddet
+            List<String> stokHatalari = new ArrayList<>();
+            for (int i = 0; i < urunIds.length; i++) {
+                Urun urun = urunDAO.findById(Integer.parseInt(urunIds[i]));
+                int miktar = Integer.parseInt(miktarlar[i]);
+                int detaySubeId = subeId;
+                if (subeIdDetaylar != null && i < subeIdDetaylar.length) {
+                    try { detaySubeId = Integer.parseInt(subeIdDetaylar[i]); } catch (NumberFormatException e) { /* default */ }
+                }
+                
+                SubeStok stok = subeStokDAO.findBySubeIdVeUrunId(detaySubeId, urun.getUrunId());
+                if (stok == null || stok.getMevcutStok() < miktar) {
+                    int mevcutStok = (stok != null) ? stok.getMevcutStok() : 0;
+                    stokHatalari.add(urun.getUrunAdi() + " (istenen: " + miktar + ", stok: " + mevcutStok + ")");
+                }
+            }
+            
+            if (!stokHatalari.isEmpty()) {
+                String hataMsg = "Yetersiz stok: " + String.join(", ", stokHatalari);
+                response.sendRedirect(request.getContextPath() + "/anasayfa?error=stok&mesaj=" + java.net.URLEncoder.encode(hataMsg, "UTF-8"));
+                return;
+            }
+            
+            // Stok kontrolü geçti, siparişi oluştur
             for (int i = 0; i < urunIds.length; i++) {
                 Urun urun = urunDAO.findById(Integer.parseInt(urunIds[i]));
                 int miktar = Integer.parseInt(miktarlar[i]);

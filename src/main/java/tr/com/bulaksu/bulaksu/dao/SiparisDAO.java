@@ -3,6 +3,7 @@ package tr.com.bulaksu.bulaksu.dao;
 import tr.com.bulaksu.bulaksu.entity.Siparis;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import jakarta.persistence.Query;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -198,6 +199,78 @@ public class SiparisDAO {
                 em.getTransaction().rollback();
             }
             throw new RuntimeException("Error updating siparis durumu", e);
+        } finally {
+            em.close();
+        }
+    }
+
+    /**
+     * Native SQL ile şube, tarih aralığı ve sipariş tipi filtreleme.
+     * Hocanın isteği üzerine Native SQL sorguları kullanılmıştır.
+     * 
+     * @param subeId Şube ID (null = tüm şubeler)
+     * @param baslangic Başlangıç tarihi (null = filtresiz)
+     * @param bitis Bitiş tarihi (null = filtresiz)
+     * @param siparisTipi Sipariş tipi: "S" (Servis), "G" (Gel Al), "T" (Toptan) (null = tümü)
+     */
+    @SuppressWarnings("unchecked")
+    public List<Siparis> findByFiltrelerNativeSQL(Integer subeId, LocalDateTime baslangic, 
+                                                   LocalDateTime bitis, String siparisTipi) {
+        EntityManager em = EntityManagerProvider.getEntityManager();
+        try {
+            // Native SQL sorgusu — sipariş ID'lerini filtrelerle çek
+            StringBuilder sql = new StringBuilder(
+                "SELECT s.siparis_id FROM siparisler s WHERE 1=1 ");
+            
+            // Şube filtresi
+            if (subeId != null) {
+                sql.append("AND s.sube_id = :subeId ");
+            }
+            // Tarih aralığı filtresi
+            if (baslangic != null && bitis != null) {
+                sql.append("AND s.siparis_tarihi BETWEEN :baslangic AND :bitis ");
+            }
+            // Sipariş tipi filtresi
+            if (siparisTipi != null && !siparisTipi.isEmpty()) {
+                sql.append("AND s.siparis_tipi = :siparisTipi ");
+            }
+            
+            sql.append("ORDER BY s.siparis_tarihi DESC");
+            
+            Query nativeQuery = em.createNativeQuery(sql.toString());
+            
+            if (subeId != null) {
+                nativeQuery.setParameter("subeId", subeId);
+            }
+            if (baslangic != null && bitis != null) {
+                nativeQuery.setParameter("baslangic", baslangic);
+                nativeQuery.setParameter("bitis", bitis);
+            }
+            if (siparisTipi != null && !siparisTipi.isEmpty()) {
+                nativeQuery.setParameter("siparisTipi", siparisTipi);
+            }
+            
+            List<Object> idResults = nativeQuery.getResultList();
+            
+            if (idResults.isEmpty()) {
+                return new java.util.ArrayList<>();
+            }
+            
+            // Native SQL ile bulunan ID'lerle JPQL ile tam Siparis nesnelerini çek (JOIN FETCH ile)
+            List<Integer> siparisIds = new java.util.ArrayList<>();
+            for (Object id : idResults) {
+                siparisIds.add(((Number) id).intValue());
+            }
+            
+            return em.createQuery(
+                "SELECT DISTINCT s FROM Siparis s " +
+                "LEFT JOIN FETCH s.siparisDetaylari d " +
+                "LEFT JOIN FETCH d.urun " +
+                "LEFT JOIN FETCH s.sube " +
+                "WHERE s.siparisId IN :ids " +
+                "ORDER BY s.siparisTarihi DESC", Siparis.class)
+                .setParameter("ids", siparisIds)
+                .getResultList();
         } finally {
             em.close();
         }

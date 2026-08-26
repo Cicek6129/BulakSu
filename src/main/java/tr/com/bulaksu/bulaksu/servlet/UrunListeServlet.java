@@ -7,17 +7,23 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import tr.com.bulaksu.bulaksu.dao.SubeDAO;
+import tr.com.bulaksu.bulaksu.dao.SubeStokDAO;
 import tr.com.bulaksu.bulaksu.dao.UrunDAO;
 import tr.com.bulaksu.bulaksu.dao.UrunFiyatDAO;
 import tr.com.bulaksu.bulaksu.entity.Kullanici;
+import tr.com.bulaksu.bulaksu.entity.SubeStok;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @WebServlet("/urunler")
 public class UrunListeServlet extends HttpServlet {
     private final UrunDAO urunDAO = new UrunDAO();
     private final UrunFiyatDAO urunFiyatDAO = new UrunFiyatDAO();
     private final SubeDAO subeDAO = new SubeDAO();
+    private final SubeStokDAO subeStokDAO = new SubeStokDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -57,6 +63,16 @@ public class UrunListeServlet extends HttpServlet {
         
         request.setAttribute("urunler", urunDAO.findSatistakiUrunler());
         request.setAttribute("fiyatlar", urunFiyatDAO.findBySubeId(subeId));
+        
+        // Stok bilgilerini urunId -> mevcutStok map olarak gönder
+        Map<Integer, Integer> stokMap = new HashMap<>();
+        if (subeId != null) {
+            List<SubeStok> stoklar = subeStokDAO.findBySubeId(subeId);
+            for (SubeStok stok : stoklar) {
+                stokMap.put(stok.getUrun().getUrunId(), stok.getMevcutStok());
+            }
+        }
+        request.setAttribute("stokMap", stokMap);
         
         request.setAttribute("tip", tip);
         request.setAttribute("subeId", subeId);

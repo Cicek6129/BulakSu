@@ -33,6 +33,7 @@ public class AdminServlet extends HttpServlet {
         String subeIdStr = request.getParameter("subeId");
         String baslangicTarihStr = request.getParameter("baslangicTarih");
         String bitisTarihStr = request.getParameter("bitisTarih");
+        String siparisTipi = request.getParameter("siparisTipi");
         
         // Şube ID parse
         Integer subeId = null;
@@ -55,8 +56,8 @@ public class AdminServlet extends HttpServlet {
             bitis = LocalDate.parse(bitisTarihStr).atTime(23, 59, 59);
         }
         
-        // JPQL ile filtrelenmiş siparişleri getir
-        List<Siparis> siparisler = siparisDAO.findBySubeVeTarihVeDurum(subeId, baslangic, bitis, null, null);
+        // Native SQL ile filtrelenmiş siparişleri getir (hocanın isteği üzerine)
+        List<Siparis> siparisler = siparisDAO.findByFiltrelerNativeSQL(subeId, baslangic, bitis, siparisTipi);
         List<Sube> subeler = subeDAO.findAktifSubeler();
         
         // JSP'ye attribute'ları gönder
@@ -65,6 +66,7 @@ public class AdminServlet extends HttpServlet {
         request.setAttribute("subeId", subeId);
         request.setAttribute("baslangicTarih", baslangicTarihStr);
         request.setAttribute("bitisTarih", bitisTarihStr);
+        request.setAttribute("siparisTipi", siparisTipi);
         
         request.getRequestDispatcher("/WEB-INF/jsp/admin.jsp").forward(request, response);
     }

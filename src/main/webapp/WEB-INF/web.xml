@@ -6,7 +6,7 @@
     
     <!-- Welcome File -->
     <welcome-file-list>
-        <welcome-file>anasayfa</welcome-file>
+        <welcome-file>giris</welcome-file>
     </welcome-file-list>
     
     <session-config>

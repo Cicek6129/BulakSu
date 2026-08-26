@@ -1,4 +1,4 @@
-﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="tr">
@@ -88,7 +88,10 @@
                     </c:forEach>
                 </c:if>
                 
-                <div class="product-card">
+                <c:set var="mevcutStok" value="${stokMap[urun.urunId]}" />
+                <c:set var="stokYok" value="${mevcutStok == null || mevcutStok <= 0}" />
+                
+                <div class="product-card${stokYok ? ' is-out-of-stock' : ''}">
                     <div class="product-image-container">
                         <c:choose>
                             <c:when test="${not empty urun.gorselUrl}">
@@ -98,13 +101,18 @@
                                 <img src="https://via.placeholder.com/150" alt="Görsel Yok" class="product-image">
                             </c:otherwise>
                         </c:choose>
+                        <c:if test="${stokYok}">
+                            <div class="out-of-stock-overlay">
+                                <span class="out-of-stock-badge">Tükendi</span>
+                            </div>
+                        </c:if>
                     </div>
                     
                     <div class="product-details">
                         <div class="price-row">
                             <c:choose>
                                 <c:when test="${fiyatBulundu}">
-                                    <span class="current-price">₺${guncelFiyat}</span>
+                                    <span class="current-price"${stokYok ? ' style="color: #94a3b8;"' : ''}>₺${guncelFiyat}</span>
                                 </c:when>
                                 <c:otherwise>
                                     <span class="current-price" style="font-size: 1rem; color: #ef4444;">Şube Seçiniz</span>
@@ -116,9 +124,14 @@
                     </div>
                     
                     <div class="product-action-bottom">
-                        <c:if test="${fiyatBulundu}">
-                            <button type="button" class="btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem; width: 100%; border-radius: 8px;" onclick="openQtyModal(${urun.urunId}, '${urun.urunAdi.replace('\'', '\\\'')}', ${guncelFiyat}, '${gorselUrl}')">Sepete Ekle</button>
-                        </c:if>
+                        <c:choose>
+                            <c:when test="${stokYok && fiyatBulundu}">
+                                <button type="button" class="btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem; width: 100%; border-radius: 8px; background: #cbd5e1; cursor: not-allowed;" disabled>Stokta Yok</button>
+                            </c:when>
+                            <c:when test="${fiyatBulundu}">
+                                <button type="button" class="btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem; width: 100%; border-radius: 8px;" onclick="openQtyModal(${urun.urunId}, '${urun.urunAdi.replace('\'', '\\\'')}', ${guncelFiyat}, '${gorselUrl}', ${mevcutStok != null ? mevcutStok : 0})">Sepete Ekle</button>
+                            </c:when>
+                        </c:choose>
                     </div>
                 </div>
             </c:forEach>
@@ -160,7 +173,9 @@
             <div class="modal-body" style="text-align: center; padding: 0 2rem 2.5rem 2rem;">
                 <img id="modalProductImage" src="" alt="Ürün" style="width: 160px; height: 160px; object-fit: contain; margin: 0 auto 1.25rem auto; display: block; background: #f8fafc; border-radius: 20px; padding: 15px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
                 <h3 id="modalProductName" style="font-family: var(--font-display); font-size: 1.4rem; color: var(--ink); margin-bottom: 0.5rem; line-height: 1.3;">Ürün Adı</h3>
-                <p id="modalProductPrice" style="font-family: var(--font-mono); font-size: 1.35rem; color: var(--coral-dark); font-weight: 700; margin-bottom: 1.75rem;">₺0.00</p>
+                <p id="modalProductPrice" style="font-family: var(--font-mono); font-size: 1.35rem; color: var(--coral-dark); font-weight: 700; margin-bottom: 0.5rem;">₺0.00</p>
+                <p id="modalStockInfo" style="font-size: 0.85rem; color: #64748b; margin-bottom: 1.25rem;">Stok: 0 adet</p>
+                <p id="stockWarning" style="display: none; background: #fef2f2; color: #dc2626; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.85rem; font-weight: 500; margin-bottom: 1rem;">⚠️ Uyarı</p>
                 
                 <div class="qty-control" style="margin: 0 auto 2rem auto; transform: scale(1.2); box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-color: #e2e8f0; border-radius: 8px;">
                     <button type="button" class="qty-btn" onclick="updateModalQty(-1)" style="color: var(--text-muted); font-size: 1.4rem;">-</button>
@@ -188,12 +203,21 @@
         }
 
         let currentModalProduct = null;
+        let currentMaxStock = 0;
 
-        function openQtyModal(id, name, price, imageUrl) {
+        function openQtyModal(id, name, price, imageUrl, maxStock) {
             currentModalProduct = { id, name, price };
+            currentMaxStock = maxStock || 0;
             document.getElementById('modalProductName').innerText = name;
             document.getElementById('modalProductPrice').innerText = '₺' + price.toFixed(2);
             document.getElementById('modalProductImage').src = imageUrl;
+            
+            // Stok bilgisini modal'da göster
+            const stockInfo = document.getElementById('modalStockInfo');
+            if (stockInfo) {
+                stockInfo.innerText = 'Stok: ' + currentMaxStock + ' adet';
+                stockInfo.style.color = currentMaxStock <= 5 ? '#ef4444' : '#64748b';
+            }
             
             const cart = getCart();
             // Match by id AND tip (same product can have different prices per tip)
@@ -213,12 +237,32 @@
             let current = parseInt(input.value) || 0;
             let newVal = current + change;
             if (newVal < 0) newVal = 0;
+            if (newVal > currentMaxStock) {
+                newVal = currentMaxStock;
+                showStockWarning('Maksimum stok miktarı: ' + currentMaxStock + ' adet');
+            }
             input.value = newVal;
+        }
+        
+        function showStockWarning(message) {
+            const warning = document.getElementById('stockWarning');
+            if (warning) {
+                warning.innerText = message;
+                warning.style.display = 'block';
+                setTimeout(() => { warning.style.display = 'none'; }, 3000);
+            }
         }
         
         function confirmQtyModal() {
             if (!currentModalProduct) return;
             const qty = parseInt(document.getElementById('modalQtyInput').value) || 0;
+            
+            // Stok kontrolü
+            if (qty > currentMaxStock) {
+                showStockWarning('Yetersiz stok! Maksimum ' + currentMaxStock + ' adet alabilirsiniz.');
+                return;
+            }
+            
             let cart = getCart();
             // Unique key: id + tip
             const existingIndex = cart.findIndex(item => item.id === currentModalProduct.id && item.tip === CURRENT_TIP);
