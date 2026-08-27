@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Bulletproof CSS include -->
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css?v=13">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css?v=14">
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/popup.css?v=1">
 </head>
 <body class="kiosk-body">
@@ -25,24 +25,26 @@
             <c:set var="subeId" value="${(not empty sessionScope.kullanici and not empty sessionScope.kullanici.sube) ? sessionScope.kullanici.sube.subeId : null}" />
             <c:if test="${empty subeId}"><c:set var="subeId" value="1" /></c:if>
             
-            <div class="compact-bar-sube" style="margin-left: 0; margin-right: 0.5rem;">
-                <c:choose>
-                    <c:when test="${kullaniciSubeKilitli}">
-                        <span class="compact-sube-select" style="pointer-events: none; opacity: 0.85;">
-                            <c:forEach items="${subeler}" var="sube">
-                                <c:if test="${sube.subeId == subeId}">${sube.subeAdi}</c:if>
-                            </c:forEach>
-                        </span>
-                    </c:when>
-                    <c:otherwise>
-                        <select id="anasayfaSubeSelect" class="compact-sube-select">
-                            <c:forEach items="${subeler}" var="sube">
-                                <option value="${sube.subeId}" ${sube.subeId == subeId ? 'selected' : ''}>${sube.subeAdi}</option>
-                            </c:forEach>
-                        </select>
-                    </c:otherwise>
-                </c:choose>
-            </div>
+            <c:if test="${empty sessionScope.kullanici or sessionScope.kullanici.rol != 'ADMIN'}">
+                <div class="compact-bar-sube" style="margin-left: 0; margin-right: 0.5rem;">
+                    <c:choose>
+                        <c:when test="${kullaniciSubeKilitli}">
+                            <span class="compact-sube-select" style="pointer-events: none; opacity: 0.85;">
+                                <c:forEach items="${subeler}" var="sube">
+                                    <c:if test="${sube.subeId == subeId}">${sube.subeAdi}</c:if>
+                                </c:forEach>
+                            </span>
+                        </c:when>
+                        <c:otherwise>
+                            <select id="anasayfaSubeSelect" class="compact-sube-select">
+                                <c:forEach items="${subeler}" var="sube">
+                                    <option value="${sube.subeId}" ${sube.subeId == subeId ? 'selected' : ''}>${sube.subeAdi}</option>
+                                </c:forEach>
+                            </select>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+            </c:if>
 
             <c:choose>
                 <c:when test="${not empty sessionScope.kullanici}">

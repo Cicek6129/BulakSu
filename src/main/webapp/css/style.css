@@ -826,26 +826,30 @@ a {
 /* ===================== FLOATING CART ===================== */
 .floating-cart {
   position: fixed;
-  bottom: 2rem;
+  bottom: 2.5rem;
   left: 50%;
   transform: translateX(-50%) translateY(0);
-  background: linear-gradient(135deg, #2c3e50 0%, #3d5266 40%, #4a6274 70%, #5a7a8a 100%);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: linear-gradient(135deg, rgba(44,62,80,0.95) 0%, rgba(74,98,116,0.95) 100%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.15);
   border-radius: 50px;
-  padding: 0.75rem 0.75rem 0.75rem 1.5rem;
+  padding: 0.6rem 0.6rem 0.6rem 1.5rem;
   display: flex;
   align-items: center;
-  gap: 2rem;
-  box-shadow: 0 16px 32px -8px rgba(10, 51, 47, 0.45);
+  justify-content: space-between;
+  gap: 2.5rem;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.4);
   z-index: 1000;
   transition: var(--transition);
   animation: cartRise 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
-  max-width: 480px;
-  width: auto;
+  min-width: 320px;
+  width: max-content;
+  max-width: 90vw;
 }
 @keyframes cartRise {
-  from { opacity: 0; transform: translateX(-50%) translateY(16px); }
-  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+  from { opacity: 0; transform: translateX(-50%) translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
 }
 
 .cart-info {
@@ -863,19 +867,22 @@ a {
 }
 
 .checkout-btn {
-  background-color: var(--coral);
+  background: linear-gradient(135deg, var(--coral) 0%, #ff6b3d 100%);
   border: none;
-  border-radius: 50px;
-  padding: 0.65rem 1.5rem;
+  border-radius: 40px;
+  padding: 0.8rem 1.8rem;
   color: white;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 1rem;
   cursor: pointer;
-  transition: var(--transition);
+  box-shadow: 0 4px 12px rgba(225, 85, 43, 0.3);
+  transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .checkout-btn:hover {
-  background-color: var(--coral-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(225, 85, 43, 0.4);
 }
 
 /* ===================== MODAL ===================== */

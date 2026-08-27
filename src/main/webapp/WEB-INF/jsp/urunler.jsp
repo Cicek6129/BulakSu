@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ürünler - BulakSu</title>
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css?v=13">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css?v=14">
 </head>
 <body>
     <!-- Tek kompakt üst bar: logo + hizmet tipi + şube seçimi + sepet -->
