@@ -21,6 +21,29 @@
             </a>
         </div>
         <div style="display: flex; align-items: center; gap: 1rem;">
+            <c:set var="kullaniciSubeKilitli" value="${not empty sessionScope.kullanici and not empty sessionScope.kullanici.sube and sessionScope.kullanici.rol != 'ADMIN'}" />
+            <c:set var="subeId" value="${(not empty sessionScope.kullanici and not empty sessionScope.kullanici.sube) ? sessionScope.kullanici.sube.subeId : null}" />
+            <c:if test="${empty subeId}"><c:set var="subeId" value="1" /></c:if>
+            
+            <div class="compact-bar-sube" style="margin-left: 0; margin-right: 0.5rem;">
+                <c:choose>
+                    <c:when test="${kullaniciSubeKilitli}">
+                        <span class="compact-sube-select" style="pointer-events: none; opacity: 0.85;">
+                            <c:forEach items="${subeler}" var="sube">
+                                <c:if test="${sube.subeId == subeId}">${sube.subeAdi}</c:if>
+                            </c:forEach>
+                        </span>
+                    </c:when>
+                    <c:otherwise>
+                        <select id="anasayfaSubeSelect" class="compact-sube-select">
+                            <c:forEach items="${subeler}" var="sube">
+                                <option value="${sube.subeId}" ${sube.subeId == subeId ? 'selected' : ''}>${sube.subeAdi}</option>
+                            </c:forEach>
+                        </select>
+                    </c:otherwise>
+                </c:choose>
+            </div>
+
             <c:choose>
                 <c:when test="${not empty sessionScope.kullanici}">
                     <span style="font-size: 0.9rem; font-weight: 500; color: rgba(255,255,255,0.85);">
@@ -223,7 +246,12 @@
         });
 
         function proceedToProducts(tip) {
-            window.location.href = '<%= request.getContextPath() %>/urunler?tip=' + tip;
+            var subeSelect = document.getElementById('anasayfaSubeSelect');
+            var subeParam = '';
+            if (subeSelect && subeSelect.value) {
+                subeParam = '&subeId=' + subeSelect.value;
+            }
+            window.location.href = '<%= request.getContextPath() %>/urunler?tip=' + tip + subeParam;
         }
 
         // Ana sayfada sepet durumunu göster

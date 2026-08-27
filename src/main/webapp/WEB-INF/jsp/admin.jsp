@@ -48,7 +48,9 @@
         <c:set var="genelToplam" value="${0}" />
         <c:forEach items="${siparisler}" var="siparisOzet">
             <c:forEach items="${siparisOzet.siparisDetaylari}" var="detayOzet">
-                <c:set var="genelToplam" value="${genelToplam + detayOzet.toplamFiyat}" />
+                <c:if test="${empty siparisTipi or siparisTipi == detayOzet.siparisTipi}">
+                    <c:set var="genelToplam" value="${genelToplam + detayOzet.toplamFiyat}" />
+                </c:if>
             </c:forEach>
         </c:forEach>
 
@@ -129,16 +131,18 @@
                         <c:when test="${not empty siparis.siparisDetaylari}">
                             <ul class="ticket-items">
                                 <c:forEach items="${siparis.siparisDetaylari}" var="detay">
-                                    <c:set var="siparisToplam" value="${siparisToplam + detay.toplamFiyat}" />
-                                    <li class="ticket-item">
-                                        <span class="item-qty">${detay.miktar}×</span>
-                                        <span class="item-name">${detay.urun.urunAdi}</span>
-                                        <span class="item-price">₺${detay.toplamFiyat}</span>
-                                        <span class="item-type type-${fn:toLowerCase(detay.siparisTipi)}">
-                                            ${detay.siparisTipi == 'S' ? 'Servis' : (detay.siparisTipi == 'G' ? 'Gel-Al' : 'Toptan')}
-                                            · birim ₺${detay.birimFiyat}
-                                        </span>
-                                    </li>
+                                    <c:if test="${empty siparisTipi or siparisTipi == detay.siparisTipi}">
+                                        <c:set var="siparisToplam" value="${siparisToplam + detay.toplamFiyat}" />
+                                        <li class="ticket-item">
+                                            <span class="item-qty">${detay.miktar}×</span>
+                                            <span class="item-name">${detay.urun.urunAdi}</span>
+                                            <span class="item-price">₺${detay.toplamFiyat}</span>
+                                            <span class="item-type type-${fn:toLowerCase(detay.siparisTipi)}">
+                                                ${detay.siparisTipi == 'S' ? 'Servis' : (detay.siparisTipi == 'G' ? 'Gel-Al' : 'Toptan')}
+                                                · birim ₺${detay.birimFiyat}
+                                            </span>
+                                        </li>
+                                    </c:if>
                                 </c:forEach>
                             </ul>
                         </c:when>

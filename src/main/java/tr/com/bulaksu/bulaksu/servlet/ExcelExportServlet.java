@@ -38,7 +38,6 @@ public class ExcelExportServlet extends HttpServlet {
         String subeIdStr = request.getParameter("subeId");
         String baslangicTarihStr = request.getParameter("baslangicTarih");
         String bitisTarihStr = request.getParameter("bitisTarih");
-        String durum = request.getParameter("durum");
         
         Integer subeId = null;
         if (subeIdStr != null && !subeIdStr.trim().isEmpty()) {
@@ -59,7 +58,12 @@ public class ExcelExportServlet extends HttpServlet {
             bitis = LocalDate.parse(bitisTarihStr).atTime(23, 59, 59);
         }
         
-        List<Siparis> siparisler = siparisDAO.findBySubeVeTarihVeDurum(subeId, baslangic, bitis, durum, null);
+        String tip = request.getParameter("siparisTipi");
+        if (tip != null && tip.trim().isEmpty()) {
+            tip = null;
+        }
+        
+        List<Siparis> siparisler = siparisDAO.findByFiltrelerNativeSQL(subeId, baslangic, bitis, tip);
         
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", "attachment; filename=\"siparisler.xlsx\"");
@@ -98,6 +102,11 @@ public class ExcelExportServlet extends HttpServlet {
             for (Siparis siparis : siparisler) {
                 if (siparis.getSiparisDetaylari() != null) {
                     for (SiparisDetay detay : siparis.getSiparisDetaylari()) {
+                        // Eğer bir sipariş tipi filtresi varsa, sadece o tipe uyan detayları excele bas
+                        if (tip != null && !tip.isEmpty() && !tip.equals(detay.getSiparisTipi())) {
+                            continue;
+                        }
+                        
                         XSSFRow row = sheet.createRow(rowNum++);
                         
                         row.createCell(0).setCellValue(siparis.getSiparisId() != null ? String.valueOf(siparis.getSiparisId()) : "");
