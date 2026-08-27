@@ -66,13 +66,16 @@ public class UrunListeServlet extends HttpServlet {
         
         // Stok bilgilerini urunId -> mevcutStok map olarak gönder
         Map<Integer, Integer> stokMap = new HashMap<>();
+        Map<Integer, Integer> kritikStokMap = new HashMap<>();
         if (subeId != null) {
             List<SubeStok> stoklar = subeStokDAO.findBySubeId(subeId);
             for (SubeStok stok : stoklar) {
                 stokMap.put(stok.getUrun().getUrunId(), stok.getMevcutStok());
+                kritikStokMap.put(stok.getUrun().getUrunId(), stok.getKritikStokSeviyesi());
             }
         }
         request.setAttribute("stokMap", stokMap);
+        request.setAttribute("kritikStokMap", kritikStokMap);
         
         request.setAttribute("tip", tip);
         request.setAttribute("subeId", subeId);

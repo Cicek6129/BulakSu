@@ -140,4 +140,54 @@ public class SubeStokDAO {
             em.close();
         }
     }
+
+    // Sepete eklerken stoktan düşme - Native SQL atomik işlem
+    public boolean stokDus(int subeId, int urunId, int miktar) {
+        EntityManager em = EntityManagerProvider.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            int updatedRows = em.createNativeQuery(
+                "UPDATE sube_stoklari SET mevcut_stok = mevcut_stok - :miktar " +
+                "WHERE sube_id = :subeId AND urun_id = :urunId AND mevcut_stok >= :miktar")
+                .setParameter("miktar", miktar)
+                .setParameter("subeId", subeId)
+                .setParameter("urunId", urunId)
+                .executeUpdate();
+            em.getTransaction().commit();
+            return updatedRows > 0;
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            e.printStackTrace();
+            return false;
+        } finally {
+            em.close();
+        }
+    }
+
+    // Sepetten çıkarırken stok iade etme - Native SQL atomik işlem
+    public boolean stokIadeEt(int subeId, int urunId, int miktar) {
+        EntityManager em = EntityManagerProvider.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            int updatedRows = em.createNativeQuery(
+                "UPDATE sube_stoklari SET mevcut_stok = mevcut_stok + :miktar " +
+                "WHERE sube_id = :subeId AND urun_id = :urunId")
+                .setParameter("miktar", miktar)
+                .setParameter("subeId", subeId)
+                .setParameter("urunId", urunId)
+                .executeUpdate();
+            em.getTransaction().commit();
+            return updatedRows > 0;
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            e.printStackTrace();
+            return false;
+        } finally {
+            em.close();
+        }
+    }
 }

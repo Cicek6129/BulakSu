@@ -663,6 +663,30 @@ a {
   filter: grayscale(60%);
 }
 
+/* Kritik stok uyarısı */
+.product-card.is-low-stock {
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 1.5px rgba(245, 158, 11, 0.35), var(--shadow-card);
+}
+.low-stock-badge-wrapper {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+}
+.low-stock-badge {
+  background: #fef3c7;
+  color: #92400e;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);
+  white-space: nowrap;
+  display: inline-block;
+}
+
 .product-image {
   max-width: 100%;
   max-height: 100%;
@@ -805,7 +829,7 @@ a {
   bottom: 2rem;
   left: 50%;
   transform: translateX(-50%) translateY(0);
-  background-color: var(--teal-900);
+  background: linear-gradient(135deg, #2c3e50 0%, #3d5266 40%, #4a6274 70%, #5a7a8a 100%);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 50px;
   padding: 0.75rem 0.75rem 0.75rem 1.5rem;
@@ -816,6 +840,8 @@ a {
   z-index: 1000;
   transition: var(--transition);
   animation: cartRise 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  max-width: 480px;
+  width: auto;
 }
 @keyframes cartRise {
   from { opacity: 0; transform: translateX(-50%) translateY(16px); }
@@ -1047,7 +1073,7 @@ a {
 .kiosk-body {
   background: var(--bg-color);
   background-image: url('../images/bg-nature.jpg');
-  background-size: 100% auto;
+  background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -1078,21 +1104,22 @@ a {
   top: 0;
   z-index: 100;
   background: transparent;
-  padding: 0.75rem 0 0;
+  padding: 3rem 0 0;
 }
 
 .kiosk-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.65rem 1.5rem;
+  padding: 0.85rem 2rem;
   background: linear-gradient(135deg, #2c3e50 0%, #3d5266 40%, #4a6274 70%, #5a7a8a 100%);
   color: #fff;
   max-width: 960px;
   margin: 0 auto;
-  border-radius: 50px;
-  box-shadow: 0 4px 20px rgba(44, 62, 80, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px 24px 0 0;
+  box-shadow: 0 4px 20px rgba(44, 62, 80, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: none;
 }
 
 .kiosk-main {
@@ -1101,16 +1128,18 @@ a {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 3rem 2rem;
+  padding: 4rem 2rem;
   width: 100%;
   /* Subtle frosted glass — background still visible */
-  background: rgba(250, 246, 238, 0.25);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  margin: 1.5rem auto;
+  background: rgba(250, 246, 238, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  margin: 0 auto 3rem auto;
   max-width: 960px;
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0 0 24px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-top: none;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
 
 .kiosk-title {

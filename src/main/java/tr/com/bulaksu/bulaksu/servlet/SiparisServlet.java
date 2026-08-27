@@ -8,13 +8,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import tr.com.bulaksu.bulaksu.dao.SiparisDAO;
 import tr.com.bulaksu.bulaksu.dao.SubeDAO;
-import tr.com.bulaksu.bulaksu.dao.SubeStokDAO;
 import tr.com.bulaksu.bulaksu.dao.UrunDAO;
 import tr.com.bulaksu.bulaksu.entity.Kullanici;
 import tr.com.bulaksu.bulaksu.entity.Siparis;
 import tr.com.bulaksu.bulaksu.entity.SiparisDetay;
 import tr.com.bulaksu.bulaksu.entity.Sube;
-import tr.com.bulaksu.bulaksu.entity.SubeStok;
 import tr.com.bulaksu.bulaksu.entity.Urun;
 
 import java.io.IOException;
@@ -27,7 +25,6 @@ public class SiparisServlet extends HttpServlet {
     private final SiparisDAO siparisDAO = new SiparisDAO();
     private final SubeDAO subeDAO = new SubeDAO();
     private final UrunDAO urunDAO = new UrunDAO();
-    private final SubeStokDAO subeStokDAO = new SubeStokDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -76,38 +73,11 @@ public class SiparisServlet extends HttpServlet {
             List<SiparisDetay> detaylar = new ArrayList<>();
             BigDecimal toplamTutar = BigDecimal.ZERO;
             
-            // ÖNCELİKLE STOK KONTROLÜ YAP — yetersiz stok varsa siparişi reddet
-            List<String> stokHatalari = new ArrayList<>();
-            for (int i = 0; i < urunIds.length; i++) {
-                Urun urun = urunDAO.findById(Integer.parseInt(urunIds[i]));
-                int miktar = Integer.parseInt(miktarlar[i]);
-                int detaySubeId = subeId;
-                if (subeIdDetaylar != null && i < subeIdDetaylar.length) {
-                    try { detaySubeId = Integer.parseInt(subeIdDetaylar[i]); } catch (NumberFormatException e) { /* default */ }
-                }
-                
-                SubeStok stok = subeStokDAO.findBySubeIdVeUrunId(detaySubeId, urun.getUrunId());
-                if (stok == null || stok.getMevcutStok() < miktar) {
-                    int mevcutStok = (stok != null) ? stok.getMevcutStok() : 0;
-                    stokHatalari.add(urun.getUrunAdi() + " (istenen: " + miktar + ", stok: " + mevcutStok + ")");
-                }
-            }
-            
-            if (!stokHatalari.isEmpty()) {
-                String hataMsg = "Yetersiz stok: " + String.join(", ", stokHatalari);
-                response.sendRedirect(request.getContextPath() + "/anasayfa?error=stok&mesaj=" + java.net.URLEncoder.encode(hataMsg, "UTF-8"));
-                return;
-            }
-            
-            // Stok kontrolü geçti, siparişi oluştur
+            // Stok zaten sepete eklerken düşüldü, sadece siparişi oluştur
             for (int i = 0; i < urunIds.length; i++) {
                 Urun urun = urunDAO.findById(Integer.parseInt(urunIds[i]));
                 int miktar = Integer.parseInt(miktarlar[i]);
                 String detayTipi = (tipDetaylar != null && i < tipDetaylar.length) ? tipDetaylar[i] : "G";
-                int detaySubeId = subeId;
-                if (subeIdDetaylar != null && i < subeIdDetaylar.length) {
-                    try { detaySubeId = Integer.parseInt(subeIdDetaylar[i]); } catch (NumberFormatException e) { /* default */ }
-                }
                 
                 SiparisDetay detay = new SiparisDetay();
                 detay.setSiparis(siparis);
@@ -120,19 +90,6 @@ public class SiparisServlet extends HttpServlet {
                 toplamTutar = toplamTutar.add(satirToplam);
                 
                 detaylar.add(detay);
-                
-                // Stok güncellemesi
-                try {
-                    SubeStok stok = subeStokDAO.findBySubeIdVeUrunId(detaySubeId, urun.getUrunId());
-                    if (stok != null) {
-                        int yeniStok = stok.getMevcutStok() - miktar;
-                        if (yeniStok < 0) yeniStok = 0;
-                        stok.setMevcutStok(yeniStok);
-                        subeStokDAO.update(stok);
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
             }
             
             siparis.setToplamTutar(toplamTutar);

@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Bulletproof CSS include -->
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css?v=10">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css?v=13">
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/popup.css?v=1">
 </head>
 <body class="kiosk-body">

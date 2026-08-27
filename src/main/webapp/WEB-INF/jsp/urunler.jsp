@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ürünler - BulakSu</title>
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css?v=8">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css?v=13">
 </head>
 <body>
     <!-- Tek kompakt üst bar: logo + hizmet tipi + şube seçimi + sepet -->
@@ -84,9 +84,11 @@
                 </c:if>
                 
                 <c:set var="mevcutStok" value="${stokMap[urun.urunId]}" />
+                <c:set var="kritikStok" value="${kritikStokMap[urun.urunId]}" />
                 <c:set var="stokYok" value="${mevcutStok == null || mevcutStok <= 0}" />
+                <c:set var="stokKritik" value="${!stokYok && kritikStok != null && mevcutStok <= kritikStok}" />
                 
-                <div class="product-card${stokYok ? ' is-out-of-stock' : ''}">
+                <div class="product-card${stokYok ? ' is-out-of-stock' : ''}${stokKritik ? ' is-low-stock' : ''}">
                     <div class="product-image-container">
                         <c:choose>
                             <c:when test="${not empty urun.gorselUrl}">
@@ -99,6 +101,11 @@
                         <c:if test="${stokYok}">
                             <div class="out-of-stock-overlay">
                                 <span class="out-of-stock-badge">Tükendi</span>
+                            </div>
+                        </c:if>
+                        <c:if test="${stokKritik}">
+                            <div class="low-stock-badge-wrapper">
+                                <span class="low-stock-badge">⚠ Stok Azalıyor</span>
                             </div>
                         </c:if>
                     </div>
@@ -201,7 +208,7 @@
         let currentMaxStock = 0;
 
         function openQtyModal(id, name, price, imageUrl, maxStock) {
-            currentModalProduct = { id, name, price };
+            currentModalProduct = { id: id, name: name, price: price, imageUrl: imageUrl };
             currentMaxStock = maxStock || 0;
             document.getElementById('modalProductName').innerText = name;
             document.getElementById('modalProductPrice').innerText = '₺' + price.toFixed(2);
@@ -252,37 +259,118 @@
             if (!currentModalProduct) return;
             const qty = parseInt(document.getElementById('modalQtyInput').value) || 0;
             
-            // Stok kontrolü
-            if (qty > currentMaxStock) {
-                showStockWarning('Yetersiz stok! Maksimum ' + currentMaxStock + ' adet alabilirsiniz.');
+            let cart = getCart();
+            const existingIndex = cart.findIndex(item => item.id === currentModalProduct.id && item.tip === CURRENT_TIP);
+            const eskiMiktar = (existingIndex > -1) ? cart[existingIndex].qty : 0;
+            
+            if (qty === eskiMiktar) {
+                closeQtyModal();
                 return;
             }
             
-            let cart = getCart();
-            // Unique key: id + tip
-            const existingIndex = cart.findIndex(item => item.id === currentModalProduct.id && item.tip === CURRENT_TIP);
-            
-            if (qty > 0) {
-                if (existingIndex > -1) {
-                    cart[existingIndex].qty = qty;
-                } else {
-                    cart.push({
-                        id: currentModalProduct.id,
-                        name: currentModalProduct.name,
-                        price: currentModalProduct.price,
-                        qty: qty,
-                        tip: CURRENT_TIP,
-                        subeId: CURRENT_SUBE_ID
-                    });
-                }
-            } else {
-                if (existingIndex > -1) {
-                    cart.splice(existingIndex, 1);
-                }
+            // Ürün tamamen sepetten çıkarılıyorsa (miktar 0)
+            if (qty === 0 && existingIndex > -1) {
+                fetch('<%= request.getContextPath() %>/sepet-stok', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'action=cikar&urunId=' + currentModalProduct.id + '&subeId=' + CURRENT_SUBE_ID + '&miktar=' + eskiMiktar
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        cart.splice(existingIndex, 1);
+                        saveCart(cart);
+                        if (typeof data.mevcutStok !== 'undefined') {
+                            currentMaxStock = data.mevcutStok;
+                            const stockInfo = document.getElementById('modalStockInfo');
+                            if (stockInfo) {
+                                stockInfo.innerText = 'Stok: ' + data.mevcutStok + ' adet';
+                            }
+                        }
+                        updateCartUI();
+                        closeQtyModal();
+                    }
+                })
+                .catch(() => { showStockWarning('Bir hata oluştu, tekrar deneyin.'); });
+                return;
             }
-            saveCart(cart);
-            updateCartUI();
-            closeQtyModal();
+            
+            // Yeni ekleme veya güncelleme
+            if (existingIndex > -1) {
+                // Güncelleme — fark hesapla
+                fetch('<%= request.getContextPath() %>/sepet-stok', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'action=guncelle&urunId=' + currentModalProduct.id + '&subeId=' + CURRENT_SUBE_ID + '&miktar=' + qty + '&eskiMiktar=' + eskiMiktar
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        cart[existingIndex].qty = qty;
+                        saveCart(cart);
+                        if (typeof data.mevcutStok !== 'undefined') {
+                            currentMaxStock = data.mevcutStok;
+                            const stockInfo = document.getElementById('modalStockInfo');
+                            if (stockInfo) {
+                                stockInfo.innerText = 'Stok: ' + data.mevcutStok + ' adet';
+                            }
+                        }
+                        updateCartUI();
+                        closeQtyModal();
+                    } else {
+                        showStockWarning(data.error || 'Yetersiz stok!');
+                        if (typeof data.mevcutStok !== 'undefined') {
+                            currentMaxStock = data.mevcutStok;
+                            const stockInfo = document.getElementById('modalStockInfo');
+                            if (stockInfo) {
+                                stockInfo.innerText = 'Stok: ' + data.mevcutStok + ' adet';
+                            }
+                        }
+                    }
+                })
+                .catch(() => { showStockWarning('Bir hata oluştu, tekrar deneyin.'); });
+            } else {
+                // Yeni ekleme
+                fetch('<%= request.getContextPath() %>/sepet-stok', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'action=ekle&urunId=' + currentModalProduct.id + '&subeId=' + CURRENT_SUBE_ID + '&miktar=' + qty
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        cart.push({
+                            id: currentModalProduct.id,
+                            name: currentModalProduct.name,
+                            price: currentModalProduct.price,
+                            imageUrl: currentModalProduct.imageUrl,
+                            qty: qty,
+                            tip: CURRENT_TIP,
+                            subeId: CURRENT_SUBE_ID
+                        });
+                        saveCart(cart);
+                        if (typeof data.mevcutStok !== 'undefined') {
+                            currentMaxStock = data.mevcutStok;
+                            const stockInfo = document.getElementById('modalStockInfo');
+                            if (stockInfo) {
+                                stockInfo.innerText = 'Stok: ' + data.mevcutStok + ' adet';
+                            }
+                        }
+                        updateCartUI();
+                        closeQtyModal();
+                    } else {
+                        showStockWarning(data.error || 'Yetersiz stok!');
+                        if (typeof data.mevcutStok !== 'undefined') {
+                            currentMaxStock = data.mevcutStok;
+                            const stockInfo = document.getElementById('modalStockInfo');
+                            if (stockInfo) {
+                                stockInfo.innerText = 'Stok: ' + data.mevcutStok + ' adet';
+                            }
+                        }
+                    }
+                })
+                .catch(() => { showStockWarning('Bir hata oluştu, tekrar deneyin.'); });
+            }
         }
         
         function updateCartUI() {
