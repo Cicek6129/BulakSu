@@ -219,8 +219,16 @@ public class SiparisDAO {
         EntityManager em = EntityManagerProvider.getEntityManager();
         try {
             // Native SQL sorgusu — sipariş ID'lerini filtrelerle çek
+            // Sipariş tipi filtresi detay tablosuna bakmalı (her detayın kendi tipi var)
             StringBuilder sql = new StringBuilder(
-                "SELECT s.siparis_id FROM siparisler s WHERE 1=1 ");
+                "SELECT DISTINCT s.siparis_id, s.siparis_tarihi FROM siparisler s ");
+            
+            // Sipariş tipi filtresi varsa detay tablosuna JOIN yap
+            if (siparisTipi != null && !siparisTipi.isEmpty()) {
+                sql.append("INNER JOIN siparis_detaylari sd ON sd.siparis_id = s.siparis_id ");
+            }
+            
+            sql.append("WHERE 1=1 ");
             
             // Şube filtresi
             if (subeId != null) {
@@ -230,9 +238,9 @@ public class SiparisDAO {
             if (baslangic != null && bitis != null) {
                 sql.append("AND s.siparis_tarihi BETWEEN :baslangic AND :bitis ");
             }
-            // Sipariş tipi filtresi
+            // Sipariş tipi filtresi — detay tablosundaki siparis_tipi'ne bak
             if (siparisTipi != null && !siparisTipi.isEmpty()) {
-                sql.append("AND s.siparis_tipi = :siparisTipi ");
+                sql.append("AND sd.siparis_tipi = :siparisTipi ");
             }
             
             sql.append("ORDER BY s.siparis_tarihi DESC");
@@ -258,19 +266,35 @@ public class SiparisDAO {
             
             // Native SQL ile bulunan ID'lerle JPQL ile tam Siparis nesnelerini çek (JOIN FETCH ile)
             List<Integer> siparisIds = new java.util.ArrayList<>();
-            for (Object id : idResults) {
-                siparisIds.add(((Number) id).intValue());
+            for (Object row : idResults) {
+                Object[] cols = (Object[]) row;
+                siparisIds.add(((Number) cols[0]).intValue());
             }
             
-            return em.createQuery(
-                "SELECT DISTINCT s FROM Siparis s " +
-                "LEFT JOIN FETCH s.siparisDetaylari d " +
-                "LEFT JOIN FETCH d.urun " +
-                "LEFT JOIN FETCH s.sube " +
-                "WHERE s.siparisId IN :ids " +
-                "ORDER BY s.siparisTarihi DESC", Siparis.class)
-                .setParameter("ids", siparisIds)
-                .getResultList();
+            // Sipariş tipi filtresi varsa sadece o tipteki detayları getir
+            if (siparisTipi != null && !siparisTipi.isEmpty()) {
+                return em.createQuery(
+                    "SELECT DISTINCT s FROM Siparis s " +
+                    "LEFT JOIN FETCH s.siparisDetaylari d " +
+                    "LEFT JOIN FETCH d.urun " +
+                    "LEFT JOIN FETCH s.sube " +
+                    "WHERE s.siparisId IN :ids " +
+                    "AND d.siparisTipi = :siparisTipi " +
+                    "ORDER BY s.siparisTarihi DESC", Siparis.class)
+                    .setParameter("ids", siparisIds)
+                    .setParameter("siparisTipi", siparisTipi)
+                    .getResultList();
+            } else {
+                return em.createQuery(
+                    "SELECT DISTINCT s FROM Siparis s " +
+                    "LEFT JOIN FETCH s.siparisDetaylari d " +
+                    "LEFT JOIN FETCH d.urun " +
+                    "LEFT JOIN FETCH s.sube " +
+                    "WHERE s.siparisId IN :ids " +
+                    "ORDER BY s.siparisTarihi DESC", Siparis.class)
+                    .setParameter("ids", siparisIds)
+                    .getResultList();
+            }
         } finally {
             em.close();
         }

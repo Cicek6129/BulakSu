@@ -46,7 +46,7 @@ public class RegisterServlet extends HttpServlet {
         k.setAdSoyad(adSoyad.trim());
         k.setEmail(email.trim());
         k.setSifre(kullaniciDAO.sha256(sifre)); // Şifreyi hashle
-        k.setRol("MUSTERI"); // Varsayılan rol
+        k.setRol("KASA"); // Varsayılan rol
         k.setAktif(true);
         if (telefon != null && !telefon.trim().isEmpty()) {
             k.setTelefon(telefon.trim());

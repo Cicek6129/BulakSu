@@ -1,4 +1,4 @@
-﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
@@ -17,10 +17,9 @@
     </div>
 
     <header class="admin-header">
-        <div class="admin-logo">
-            <span class="admin-logo-mark">🛒</span>
-            BulakSu Yönetim
-        </div>
+        <a href="${pageContext.request.contextPath}/anasayfa" class="admin-logo">
+            <img src="${pageContext.request.contextPath}/images/logo.png" alt="BulakSu Yönetim" class="admin-brand-logo" style="height: 36px; width: auto; object-fit: contain; max-width: 200px;">
+        </a>
         <div class="admin-header-actions">
             <span class="admin-welcome">Hoş geldiniz, <strong>${sessionScope.kullanici.rol == 'ADMIN' ? 'Sistem Yöneticisi' : sessionScope.kullanici.adSoyad}</strong></span>
             <a href="${pageContext.request.contextPath}/anasayfa" class="admin-pill-link">Ana Sayfa</a>

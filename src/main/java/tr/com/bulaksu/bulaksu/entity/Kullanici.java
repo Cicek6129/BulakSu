@@ -2,7 +2,6 @@ package tr.com.bulaksu.bulaksu.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "kullanicilar")
@@ -26,7 +25,7 @@ public class Kullanici {
     private String telefon;
 
     @Column(name = "rol", length = 20, nullable = false)
-    private String rol = "MUSTERI"; // Varsayılan MUSTERI
+    private String rol = "KASA"; // Varsayılan KASA
 
     @Column(name = "aktif")
     private Boolean aktif = true;
@@ -38,8 +37,7 @@ public class Kullanici {
     @JoinColumn(name = "sube_id")
     private Sube sube;
 
-    @OneToMany(mappedBy = "kullanici", fetch = FetchType.LAZY)
-    private List<Siparis> siparisler;
+
 
     public Kullanici() {
     }
@@ -114,13 +112,5 @@ public class Kullanici {
 
     public void setSube(Sube sube) {
         this.sube = sube;
-    }
-
-    public List<Siparis> getSiparisler() {
-        return siparisler;
-    }
-
-    public void setSiparisler(List<Siparis> siparisler) {
-        this.siparisler = siparisler;
     }
 }

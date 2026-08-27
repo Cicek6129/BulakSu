@@ -18,10 +18,6 @@ public class Siparis {
     @JoinColumn(name = "sube_id", nullable = false)
     private Sube sube;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "kullanici_id")
-    private Kullanici kullanici;
-
     @Column(name = "toplam_tutar", precision = 10, scale = 2)
     private BigDecimal toplamTutar = BigDecimal.ZERO;
 
@@ -30,15 +26,6 @@ public class Siparis {
 
     @Column(name = "siparis_tarihi", insertable = false, updatable = false)
     private LocalDateTime siparisTarihi;
-
-    @Column(name = "musteri_ad", length = 100)
-    private String musteriAd;
-
-    @Column(name = "musteri_telefon", length = 20)
-    private String musteriTelefon;
-
-    @Column(name = "siparis_tipi", length = 10)
-    private String siparisTipi;
 
     @OneToMany(mappedBy = "siparis", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SiparisDetay> siparisDetaylari;
@@ -59,14 +46,6 @@ public class Siparis {
 
     public void setSube(Sube sube) {
         this.sube = sube;
-    }
-
-    public Kullanici getKullanici() {
-        return kullanici;
-    }
-
-    public void setKullanici(Kullanici kullanici) {
-        this.kullanici = kullanici;
     }
 
     public BigDecimal getToplamTutar() {
@@ -91,30 +70,6 @@ public class Siparis {
 
     public void setSiparisTarihi(LocalDateTime siparisTarihi) {
         this.siparisTarihi = siparisTarihi;
-    }
-
-    public String getMusteriAd() {
-        return musteriAd;
-    }
-
-    public void setMusteriAd(String musteriAd) {
-        this.musteriAd = musteriAd;
-    }
-
-    public String getMusteriTelefon() {
-        return musteriTelefon;
-    }
-
-    public void setMusteriTelefon(String musteriTelefon) {
-        this.musteriTelefon = musteriTelefon;
-    }
-
-    public String getSiparisTipi() {
-        return siparisTipi;
-    }
-
-    public void setSiparisTipi(String siparisTipi) {
-        this.siparisTipi = siparisTipi;
     }
 
     public List<SiparisDetay> getSiparisDetaylari() {

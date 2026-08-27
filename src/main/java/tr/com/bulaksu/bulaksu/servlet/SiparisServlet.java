@@ -67,20 +67,11 @@ public class SiparisServlet extends HttpServlet {
 
             Sube sube = subeDAO.findById(subeId);
 
-            // İlk ürünün tipini sipariş tipi olarak kullan
-            String siparisTipi = (tipDetaylar != null && tipDetaylar.length > 0) ? tipDetaylar[0] : "G";
             
             Siparis siparis = new Siparis();
             siparis.setSube(sube);
             siparis.setSiparisDurumu("TAMAMLANDI");
-            siparis.setSiparisTipi(siparisTipi);
             
-            // Kullanıcı bilgilerini session'dan al
-            if (kullanici != null) {
-                siparis.setKullanici(kullanici);
-                siparis.setMusteriAd(kullanici.getAdSoyad());
-                siparis.setMusteriTelefon(kullanici.getTelefon());
-            }
             
             List<SiparisDetay> detaylar = new ArrayList<>();
             BigDecimal toplamTutar = BigDecimal.ZERO;
@@ -112,7 +103,7 @@ public class SiparisServlet extends HttpServlet {
             for (int i = 0; i < urunIds.length; i++) {
                 Urun urun = urunDAO.findById(Integer.parseInt(urunIds[i]));
                 int miktar = Integer.parseInt(miktarlar[i]);
-                String detayTipi = (tipDetaylar != null && i < tipDetaylar.length) ? tipDetaylar[i] : siparisTipi;
+                String detayTipi = (tipDetaylar != null && i < tipDetaylar.length) ? tipDetaylar[i] : "G";
                 int detaySubeId = subeId;
                 if (subeIdDetaylar != null && i < subeIdDetaylar.length) {
                     try { detaySubeId = Integer.parseInt(subeIdDetaylar[i]); } catch (NumberFormatException e) { /* default */ }

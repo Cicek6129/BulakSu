@@ -18,13 +18,14 @@ public class DbUpdater {
                 "email VARCHAR(150) NOT NULL UNIQUE, " +
                 "sifre VARCHAR(255) NOT NULL, " +
                 "telefon VARCHAR(20), " +
-                "rol VARCHAR(20) NOT NULL DEFAULT 'MUSTERI', " +
+                "rol VARCHAR(20) NOT NULL DEFAULT 'KASA', " +
                 "aktif BOOLEAN DEFAULT true, " +
                 "kayit_tarihi DATETIME DEFAULT CURRENT_TIMESTAMP)",
                 
                 "INSERT IGNORE INTO kullanicilar (ad_soyad, email, sifre, rol, aktif) VALUES ('Sistem Yöneticisi', 'admin', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'ADMIN', true)",
                 
-                "ALTER TABLE siparisler ADD COLUMN kullanici_id INT",
+                // Artık kullanılmıyor: kullanici_id sütunu siparisler tablosundan kaldırıldı
+                // "ALTER TABLE siparisler ADD COLUMN kullanici_id INT",
                 
                 "DROP TABLE IF EXISTS admin_kullanici"
             };

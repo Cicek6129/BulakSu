@@ -1,0 +1,275 @@
+/* ============================================================
+   BulakSu – Custom Popup / Modal Component
+   Tarayıcı confirm() ve alert() yerine site içi popup.
+   ============================================================ */
+
+/* Overlay */
+.bs-popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 30, 26, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+.bs-popup-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Card */
+.bs-popup-card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.04);
+    padding: 2rem 2rem 1.5rem;
+    max-width: 420px;
+    width: 90vw;
+    transform: scale(0.92) translateY(10px);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    text-align: center;
+}
+/* Hide scrollbar for the popup card */
+.bs-popup-card::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
+.bs-popup-card {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE 10+ */
+}
+.bs-popup-overlay.active .bs-popup-card {
+    transform: scale(1) translateY(0);
+}
+
+/* Icon */
+.bs-popup-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 1.5rem;
+}
+.bs-popup-icon.icon-warning {
+    background: #FEF3C7;
+    color: #D97706;
+}
+.bs-popup-icon.icon-danger {
+    background: #FEE2E2;
+    color: #DC2626;
+}
+.bs-popup-icon.icon-success {
+    background: #D1FAE5;
+    color: #059669;
+}
+.bs-popup-icon.icon-info {
+    background: #E2F1EC;
+    color: #11594F;
+}
+
+/* Title */
+.bs-popup-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: #142B26;
+    margin: 0 0 0.5rem;
+}
+
+/* Message */
+.bs-popup-message {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    color: #4C625C;
+    line-height: 1.5;
+    margin: 0 0 1.5rem;
+}
+
+/* Button row */
+.bs-popup-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+}
+
+/* Base button */
+.bs-popup-btn {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.7rem 1.5rem;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.15s, box-shadow 0.2s;
+    min-width: 100px;
+}
+.bs-popup-btn:hover {
+    transform: translateY(-1px);
+}
+.bs-popup-btn:active {
+    transform: translateY(0);
+}
+
+/* Cancel button */
+.bs-popup-btn-cancel {
+    background: #F1F5F9;
+    color: #475569;
+}
+.bs-popup-btn-cancel:hover {
+    background: #E2E8F0;
+}
+
+/* Confirm / primary */
+.bs-popup-btn-confirm {
+    background: #E1552B;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(225, 85, 43, 0.3);
+}
+.bs-popup-btn-confirm:hover {
+    background: #AE3C1B;
+}
+
+/* Danger variant */
+.bs-popup-btn-danger {
+    background: #DC2626;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+}
+.bs-popup-btn-danger:hover {
+    background: #B91C1C;
+}
+
+/* Success variant */
+.bs-popup-btn-success {
+    background: #059669;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+}
+.bs-popup-btn-success:hover {
+    background: #047857;
+}
+
+/* ============================================================
+   Toast Notification (auto-dismiss bildirim)
+   ============================================================ */
+.bs-toast-container {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    pointer-events: none;
+}
+
+.bs-toast {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04);
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 300px;
+    max-width: 420px;
+    transform: translateX(120%);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: auto;
+}
+.bs-toast.show {
+    transform: translateX(0);
+}
+.bs-toast.hide {
+    transform: translateX(120%);
+    transition: transform 0.3s ease-in;
+}
+
+.bs-toast-icon {
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+.bs-toast-content {
+    flex: 1;
+}
+.bs-toast-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #142B26;
+}
+.bs-toast-msg {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+    color: #4C625C;
+    margin-top: 0.15rem;
+}
+.bs-toast-close {
+    background: none;
+    border: none;
+    color: #94A3B8;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 0.25rem;
+    flex-shrink: 0;
+}
+.bs-toast-close:hover {
+    color: #475569;
+}
+
+.bs-toast-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    border-radius: 0 0 12px 12px;
+    transition: width linear;
+}
+.bs-toast.toast-success .bs-toast-progress { background: #059669; }
+.bs-toast.toast-error .bs-toast-progress { background: #DC2626; }
+.bs-toast.toast-warning .bs-toast-progress { background: #D97706; }
+.bs-toast.toast-info .bs-toast-progress { background: #11594F; }
+
+/* Admin mode popup uyumu */
+.admin-mode .bs-popup-card {
+    background: #112B27;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.admin-mode .bs-popup-title {
+    color: #E2F1EC;
+}
+.admin-mode .bs-popup-message {
+    color: #94B5AB;
+}
+.admin-mode .bs-popup-btn-cancel {
+    background: rgba(255,255,255,0.08);
+    color: #94B5AB;
+}
+.admin-mode .bs-popup-btn-cancel:hover {
+    background: rgba(255,255,255,0.15);
+}
+
+/* Admin toast */
+.admin-mode .bs-toast {
+    background: #112B27;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.admin-mode .bs-toast-title {
+    color: #E2F1EC;
+}
+.admin-mode .bs-toast-msg {
+    color: #94B5AB;
+}
+.admin-mode .bs-toast-close {
+    color: #5E8A7E;
+}

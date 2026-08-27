@@ -1,4 +1,4 @@
-﻿<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="tr">
@@ -9,19 +9,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Bulletproof CSS include -->
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css?v=6">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css?v=7">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/popup.css?v=1">
 </head>
 <body class="kiosk-body">
     <header class="kiosk-header">
         <div class="logo-group">
-            <span class="logo-mark" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="19" cy="21" r="1"></circle>
-                    <path d="M2 3h2l2.6 12.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6L22 7H6"></path>
-                </svg>
-            </span>
-            <span class="logo-text">BulakSu</span>
+            <a href="${pageContext.request.contextPath == '' ? request.getContextPath() : pageContext.request.contextPath}/anasayfa" style="display: block; line-height: 0;">
+                <img src="${pageContext.request.contextPath == '' ? request.getContextPath() : pageContext.request.contextPath}/images/logo.png" alt="BulakSu Logo" class="brand-logo" style="height: 40px; width: auto; object-fit: contain; max-width: 250px;">
+            </a>
         </div>
         <div style="display: flex; align-items: center; gap: 1rem;">
             <c:choose>
@@ -86,10 +82,10 @@
             </button>
         </div>
 
-        <%-- Zayi Butonu (Sadece Admin Görebilir) --%>
-        <c:if test="${sessionScope.kullanici.rol == 'ADMIN'}">
+        <%-- Zayi Butonu (Tüm Kullanıcılar İçin) --%>
+        <c:if test="${not empty sessionScope.kullanici}">
             <div style="display: flex; justify-content: center; margin-top: 1rem; width: 100%; max-width: 900px; margin-left: auto; margin-right: auto;">
-                <button class="kiosk-btn" style="background-color: #dc2626; color: white; width: 100%; max-width: 600px; min-height: 80px; flex-direction: row; gap: 1rem; border-radius: 12px; font-size: 1.5rem; padding: 1rem;" onclick="window.location.href='${pageContext.request.contextPath}/admin/zayi'">
+                <button class="kiosk-btn" style="background-color: #dc2626; color: white; width: 100%; max-width: 600px; min-height: 80px; flex-direction: row; gap: 1rem; border-radius: 12px; font-size: 1.5rem; padding: 1rem;" onclick="openZayiModal()">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:32px;height:32px;margin:0;">
                         <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                     </svg>
@@ -99,6 +95,39 @@
         </c:if>
 
     </main>
+
+    <!-- Zayi Modal (Custom Popup) -->
+    <div class="bs-popup-overlay" id="zayiModalOverlay">
+        <div class="bs-popup-card" style="max-width: 500px; max-height: 80vh; overflow-y: auto; text-align: left;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 class="bs-popup-title" style="margin: 0; color: #dc2626;">Zayi (Fire) Düşüm</h3>
+                <button type="button" class="bs-toast-close" onclick="closeZayiModal()" style="font-size: 1.5rem;">&times;</button>
+            </div>
+            
+            <c:if test="${empty stokListesi}">
+                <p style="text-align: center; color: var(--text-muted);">Şubenizde stok bulunamadı.</p>
+            </c:if>
+            <c:if test="${not empty stokListesi}">
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <c:forEach items="${stokListesi}" var="stok">
+                        <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                                <strong>${stok.urun.urunAdi}</strong>
+                                <span style="color: var(--text-muted); font-size: 0.9rem;">Mevcut: <strong>${stok.mevcutStok}</strong></span>
+                            </div>
+                            <form action="<%= request.getContextPath() %>/zayi-dus" method="POST" class="bs-confirm-form" data-confirm-title="Zayi Onay" data-confirm-message="Bu üründen zayi düşmek istediğinize emin misiniz?">
+                                <input type="hidden" name="urunId" value="${stok.urun.urunId}">
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <input type="number" name="miktar" min="1" max="${stok.mevcutStok}" required placeholder="Miktar" style="flex: 1; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px;">
+                                    <button type="submit" class="bs-popup-btn bs-popup-btn-danger">Zayi Düş</button>
+                                </div>
+                            </form>
+                        </div>
+                    </c:forEach>
+                </div>
+            </c:if>
+        </div>
+    </div>
 
     <!-- Floating Cart Bar — localStorage'dan okuyor -->
     <div class="floating-cart" id="floatingCart" style="display: none;">
@@ -117,6 +146,80 @@
     </div>
 
     <script>
+        function openZayiModal() {
+            var overlay = document.getElementById('zayiModalOverlay');
+            if(overlay) overlay.classList.add('active');
+        }
+        function closeZayiModal() {
+            var overlay = document.getElementById('zayiModalOverlay');
+            if(overlay) overlay.classList.remove('active');
+        }
+
+        // Initialize modal forms with AJAX to prevent page reload
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('#zayiModalOverlay .bs-confirm-form').forEach(function(form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    var currentForm = this;
+                    
+                    BsPopup.confirm({
+                        title: currentForm.dataset.confirmTitle || 'Emin misiniz?',
+                        message: currentForm.dataset.confirmMessage || '',
+                        icon: 'danger',
+                        btnStyle: 'danger',
+                        confirmText: 'Evet, Düş',
+                        cancelText: 'İptal',
+                        onConfirm: function() {
+                            var formData = new URLSearchParams(new FormData(currentForm));
+                            
+                            fetch(currentForm.action, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded'
+                                },
+                                body: formData.toString()
+                            })
+                            .then(response => response.text())
+                            .then(text => {
+                                try {
+                                    var data = JSON.parse(text);
+                                    if(data.success) {
+                                        BsPopup.toast({ title: 'Başarılı!', message: data.message, type: 'success', duration: 4000 });
+                                        
+                                        // Update stock number on UI dynamically without reload
+                                        var miktarInput = currentForm.querySelector('input[name="miktar"]');
+                                        var miktarDusulen = parseInt(miktarInput.value);
+                                        var stokTextEl = currentForm.previousElementSibling.querySelector('span strong');
+                                        var mevcutStok = parseInt(stokTextEl.innerText);
+                                        
+                                        var yeniStok = mevcutStok - miktarDusulen;
+                                        stokTextEl.innerText = yeniStok;
+                                        miktarInput.max = yeniStok;
+                                        miktarInput.value = ''; // clear input
+                                        
+                                        if(yeniStok <= 0) {
+                                            currentForm.parentElement.style.opacity = '0.5';
+                                            currentForm.parentElement.style.pointerEvents = 'none';
+                                            currentForm.querySelector('button').disabled = true;
+                                        }
+                                    } else {
+                                        BsPopup.toast({ title: 'Hata!', message: data.message, type: 'error', duration: 5000 });
+                                    }
+                                } catch (e) {
+                                    console.error("Raw response:", text);
+                                    BsPopup.toast({ title: 'Sunucu Hatası', message: 'Hata detayı konsola yazdırıldı.', type: 'error', duration: 5000 });
+                                }
+                            })
+                            .catch(error => {
+                                console.error("Network error:", error);
+                                BsPopup.toast({ title: 'Hata!', message: 'Ağ hatası oluştu.', type: 'error', duration: 5000 });
+                            });
+                        }
+                    });
+                });
+            });
+        });
+
         function proceedToProducts(tip) {
             window.location.href = '<%= request.getContextPath() %>/urunler?tip=' + tip;
         }
@@ -146,5 +249,6 @@
             }
         })();
     </script>
+    <script src="<%= request.getContextPath() %>/js/popup.js?v=1"></script>
 </body>
 </html>

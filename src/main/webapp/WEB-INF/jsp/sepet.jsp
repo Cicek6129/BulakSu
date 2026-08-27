@@ -1,4 +1,4 @@
-﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="tr">
@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sepetim - BulakSu</title>
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css?v=7">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/popup.css?v=1">
     <style>
         .checkout-container {
             width: 100%;
@@ -163,16 +164,11 @@
     <!-- Kompakt üst bar -->
     <div class="compact-bar-wrapper">
     <header class="compact-bar">
-        <a href="<%= request.getContextPath() %>/" class="compact-bar-logo">
-            <span class="logo-mark" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="19" cy="21" r="1"></circle>
-                    <path d="M2 3h2l2.6 12.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6L22 7H6"></path>
-                </svg>
-            </span>
-            <span class="logo-text">BulakSu</span>
-        </a>
+        <div class="logo-group">
+            <a href="${pageContext.request.contextPath == '' ? request.getContextPath() : pageContext.request.contextPath}/anasayfa" style="display: block; line-height: 0;">
+                <img src="${pageContext.request.contextPath == '' ? request.getContextPath() : pageContext.request.contextPath}/images/logo.png" alt="BulakSu Logo" class="brand-logo" style="height: 40px; width: auto; object-fit: contain; max-width: 250px;">
+            </a>
+        </div>
 
         <span class="compact-bar-badge badge-servis">Sipariş</span>
 
@@ -298,12 +294,26 @@
             document.getElementById('cartTotal').innerText = '₺' + total.toFixed(2);
         }
 
-        // Sipariş tamamlandıktan sonra sepeti temizle
-        document.getElementById('checkoutForm').addEventListener('submit', function() {
-            localStorage.removeItem(CART_KEY);
+        // Sipariş tamamlama - custom popup ile onay
+        document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+            BsPopup.confirm({
+                title: 'Siparişi Tamamla',
+                message: 'Siparişi onaylamak istediğinize emin misiniz?',
+                icon: 'info',
+                btnStyle: 'confirm',
+                confirmText: 'Evet, Tamamla',
+                cancelText: 'İptal',
+                onConfirm: function() {
+                    localStorage.removeItem(CART_KEY);
+                    form.submit();
+                }
+            });
         });
 
         document.addEventListener('DOMContentLoaded', renderCart);
     </script>
+    <script src="<%= request.getContextPath() %>/js/popup.js?v=1"></script>
 </body>
 </html>
