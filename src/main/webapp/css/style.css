@@ -1045,12 +1045,10 @@ a {
 
 /* ===================== KIOSK / CAFE STYLE ===================== */
 .kiosk-body {
-  margin: 0;
-  padding: 0;
-  background-color: var(--bg-color);
+  background: var(--bg-color);
   background-image: url('../images/bg-nature.jpg');
-  background-size: cover;
-  background-position: center;
+  background-size: 100% auto;
+  background-position: center center;
   background-repeat: no-repeat;
   background-attachment: fixed;
   min-height: 100vh;
@@ -1065,7 +1063,7 @@ a {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(250, 246, 238, 0.45);
+  background: rgba(250, 246, 238, 0.5);
   z-index: 0;
   pointer-events: none;
 }
@@ -1075,21 +1073,12 @@ a {
   z-index: 1;
 }
 
-/* Single frosted container for header + main content */
-.kiosk-frosted-container {
-  position: relative;
-  z-index: 10;
-  max-width: 960px;
-  margin: 0.75rem auto 0;
-  background: rgba(250, 246, 238, 0.3);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  overflow: hidden;
-  min-height: calc(100vh - 1.5rem);
-  display: flex;
-  flex-direction: column;
+.kiosk-header-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: transparent;
+  padding: 0.75rem 0 0;
 }
 
 .kiosk-header {
@@ -1099,7 +1088,8 @@ a {
   padding: 0.65rem 1.5rem;
   background: linear-gradient(135deg, #2c3e50 0%, #3d5266 40%, #4a6274 70%, #5a7a8a 100%);
   color: #fff;
-  margin: 0.75rem 0.75rem 0;
+  max-width: 960px;
+  margin: 0 auto;
   border-radius: 50px;
   box-shadow: 0 4px 20px rgba(44, 62, 80, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -1111,8 +1101,16 @@ a {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 3rem 2rem;
   width: 100%;
+  /* Subtle frosted glass — background still visible */
+  background: rgba(250, 246, 238, 0.25);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  margin: 1.5rem auto;
+  max-width: 960px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .kiosk-title {
@@ -1215,13 +1213,12 @@ footer {
 }
 
 /* ===================== COMPACT BAR (product page) ===================== */
-/* Compact bar wrapper is obsolete when in frosted container, but keep it transparent just in case */
 .compact-bar-wrapper {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: transparent;
-  padding: 0;
+  background: var(--bg-color);
+  padding: 0.75rem 0 0;
 }
 
 .compact-bar {
@@ -1231,7 +1228,8 @@ footer {
   padding: 0.65rem 1.5rem;
   background: linear-gradient(135deg, #2c3e50 0%, #3d5266 40%, #4a6274 70%, #5a7a8a 100%);
   color: #fff;
-  margin: 0.75rem 0.75rem 0;
+  max-width: 960px;
+  margin: 0 auto;
   border-radius: 50px;
   box-shadow: 0 4px 20px rgba(44, 62, 80, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.08);

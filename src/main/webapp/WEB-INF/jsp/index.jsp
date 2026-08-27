@@ -9,11 +9,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Bulletproof CSS include -->
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css?v=12">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css?v=10">
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/popup.css?v=1">
 </head>
 <body class="kiosk-body">
-    <div class="kiosk-frosted-container">
+    <div class="kiosk-header-wrapper">
     <header class="kiosk-header">
         <div class="logo-group">
             <a href="${pageContext.request.contextPath == '' ? request.getContextPath() : pageContext.request.contextPath}/anasayfa" style="display: block; line-height: 0;">
@@ -56,6 +56,7 @@
             </a>
         </div>
     </header>
+    </div>
 
     <main class="kiosk-main">
 
@@ -96,7 +97,6 @@
         </c:if>
 
     </main>
-    </div>
 
     <!-- Zayi Modal (Custom Popup) -->
     <div class="bs-popup-overlay" id="zayiModalOverlay">
