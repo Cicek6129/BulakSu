@@ -52,14 +52,16 @@ public class KullaniciDAO {
         em.close();
     }
 
-    public Kullanici findByEmailAndSifre(String email, String sifre) {
+    public Kullanici findByEmailAndSifre(String emailOrUsername, String sifre) {
         EntityManager em = emf.createEntityManager();
         try {
             String sifreHash = sha256(sifre);
-            return em.createQuery("SELECT k FROM Kullanici k WHERE k.email = :email AND k.sifre = :sifre AND k.aktif = true", Kullanici.class)
-                    .setParameter("email", email)
+            List<Kullanici> list = em.createQuery("SELECT k FROM Kullanici k WHERE (k.email = :login OR k.adSoyad = :login) AND k.sifre = :sifre AND k.aktif = true", Kullanici.class)
+                    .setParameter("login", emailOrUsername)
                     .setParameter("sifre", sifreHash)
-                    .getSingleResult();
+                    .setMaxResults(1)
+                    .getResultList();
+            return list.isEmpty() ? null : list.get(0);
         } catch (Exception e) {
             return null; // Not found or error
         } finally {

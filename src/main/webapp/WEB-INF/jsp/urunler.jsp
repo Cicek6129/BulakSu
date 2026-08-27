@@ -6,11 +6,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ürünler - BulakSu</title>
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css?v=7">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css?v=12">
 </head>
-<body>
+<body class="kiosk-body">
+    <div class="kiosk-frosted-container">
     <!-- Tek kompakt üst bar: logo + hizmet tipi + şube seçimi + sepet -->
-    <div class="compact-bar-wrapper">
     <header class="compact-bar">
         <div class="logo-group">
             <a href="${pageContext.request.contextPath == '' ? request.getContextPath() : pageContext.request.contextPath}/anasayfa" style="display: block; line-height: 0;">
@@ -61,9 +61,8 @@
             <span id="headerCartBadge" class="compact-cart-badge">0</span>
         </button>
     </header>
-    </div>
 
-    <main class="main-content" style="padding-top: 1.5rem;">
+    <main class="main-content" style="padding-top: 1.5rem; flex: 1; overflow-y: auto;">
         <div class="products-grid compact-grid">
             <c:forEach items="${urunler}" var="urun">
                 <c:set var="guncelFiyat" value="0" />
@@ -132,6 +131,7 @@
             </c:forEach>
         </div>
     </main>
+    </div>
 
     <script>
         function changeSube(subeId) {

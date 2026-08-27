@@ -9,10 +9,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Bulletproof CSS include -->
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css?v=7">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css?v=12">
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/popup.css?v=1">
 </head>
 <body class="kiosk-body">
+    <div class="kiosk-frosted-container">
     <header class="kiosk-header">
         <div class="logo-group">
             <a href="${pageContext.request.contextPath == '' ? request.getContextPath() : pageContext.request.contextPath}/anasayfa" style="display: block; line-height: 0;">
@@ -22,7 +23,7 @@
         <div style="display: flex; align-items: center; gap: 1rem;">
             <c:choose>
                 <c:when test="${not empty sessionScope.kullanici}">
-                    <span style="font-size: 0.9rem; font-weight: 500; color: #11594F;">
+                    <span style="font-size: 0.9rem; font-weight: 500; color: rgba(255,255,255,0.85);">
                         Hoş geldin, ${sessionScope.kullanici.rol == 'ADMIN' ? 'Sistem Yöneticisi' : sessionScope.kullanici.adSoyad}
                     </span>
                     <c:if test="${sessionScope.kullanici.rol == 'ADMIN'}">
@@ -30,7 +31,7 @@
                             Admin Paneli
                         </a>
                     </c:if>
-                    <a href="${pageContext.request.contextPath}/cikis" class="admin-login-link" style="color: #dc2626; border-color: rgba(220,38,38,0.2); background: rgba(220,38,38,0.05);">
+                    <a href="${pageContext.request.contextPath}/cikis" class="admin-login-link" style="color: #fca5a5; border-color: rgba(252,165,165,0.3); background: rgba(220,38,38,0.2);">
                         Çıkış Yap
                     </a>
                 </c:when>
@@ -45,7 +46,7 @@
                 </c:otherwise>
             </c:choose>
             
-            <a href="${pageContext.request.contextPath}/sepet" style="position: relative; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; background-color: #f1f5f9; border-radius: 50%; color: #11594F; text-decoration: none; transition: background-color 0.2s;" title="Sepete Git">
+            <a href="${pageContext.request.contextPath}/sepet" style="position: relative; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; color: #fff; text-decoration: none; transition: background-color 0.2s;" title="Sepete Git">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;">
                     <circle cx="9" cy="21" r="1"></circle>
                     <circle cx="19" cy="21" r="1"></circle>
@@ -95,6 +96,7 @@
         </c:if>
 
     </main>
+    </div>
 
     <!-- Zayi Modal (Custom Popup) -->
     <div class="bs-popup-overlay" id="zayiModalOverlay">

@@ -1,4 +1,4 @@
-﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="tr">
@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-login.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-login.css?v=4">
 </head>
 <body>
     <div class="bg-particles">
@@ -19,14 +19,9 @@
 
     <div class="login-wrapper">
         <div class="login-brand">
-            <div class="brand-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="19" cy="21" r="1"></circle>
-                    <path d="M2 3h2l2.6 12.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6L22 7H6"></path>
-                </svg>
+            <div class="brand-logo-wrapper">
+                <img src="${pageContext.request.contextPath}/images/logo.png" alt="BulakSu Logo" class="brand-logo-img" style="height: 55px; width: auto; max-width: 200px;">
             </div>
-            <h1 class="brand-name">BulakSu</h1>
             <p class="brand-subtitle">Giriş Ekranı</p>
         </div>
 

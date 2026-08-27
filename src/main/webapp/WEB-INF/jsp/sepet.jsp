@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sepetim - BulakSu</title>
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css?v=7">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css?v=8">
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/popup.css?v=1">
     <style>
         .checkout-container {
