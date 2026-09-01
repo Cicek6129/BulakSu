@@ -38,11 +38,21 @@ public class ExcelExportServlet extends HttpServlet {
         String subeIdStr = request.getParameter("subeId");
         String baslangicTarihStr = request.getParameter("baslangicTarih");
         String bitisTarihStr = request.getParameter("bitisTarih");
+        String urunIdStr = request.getParameter("urunId");
         
         Integer subeId = null;
         if (subeIdStr != null && !subeIdStr.trim().isEmpty()) {
             try {
                 subeId = Integer.parseInt(subeIdStr);
+            } catch (NumberFormatException e) {
+                // Ignore
+            }
+        }
+        
+        Integer urunId = null;
+        if (urunIdStr != null && !urunIdStr.trim().isEmpty()) {
+            try {
+                urunId = Integer.parseInt(urunIdStr);
             } catch (NumberFormatException e) {
                 // Ignore
             }
@@ -63,7 +73,7 @@ public class ExcelExportServlet extends HttpServlet {
             tip = null;
         }
         
-        List<Siparis> siparisler = siparisDAO.findByFiltrelerNativeSQL(subeId, baslangic, bitis, tip);
+        List<Siparis> siparisler = siparisDAO.findByFiltrelerNativeSQL(subeId, baslangic, bitis, tip,urunId);
         
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", "attachment; filename=\"siparisler.xlsx\"");
@@ -136,6 +146,14 @@ public class ExcelExportServlet extends HttpServlet {
                         row.createCell(7).setCellValue(readableSiparisTipi);
                         row.createCell(8).setCellValue(siparis.getSiparisDurumu() != null ? siparis.getSiparisDurumu() : "");
                     }
+                    
+                    XSSFRow totalRow = sheet.createRow(rowNum);
+                    totalRow.createCell(3).setCellValue("Toplam:");
+                    XSSFCell totalMiktarCell = totalRow.createCell(4);
+                    totalMiktarCell.setCellFormula("SUM(E2:E" + rowNum + ")");
+                    XSSFCell totalTutarCell = totalRow.createCell(6);
+                    totalTutarCell.setCellFormula("SUM(G2:G" + rowNum + ")");
+                    totalTutarCell.setCellStyle(currencyStyle);
                 }
             }
             

@@ -44,7 +44,8 @@ public class AdminKullaniciYonetimServlet extends HttpServlet {
                     // Şube ataması
                     String subeIdStr = request.getParameter("subeId");
                     if (subeIdStr != null && !subeIdStr.isEmpty()) {
-                        Sube sube = subeDAO.findById(Integer.parseInt(subeIdStr));
+                        Sube sube = new Sube();
+                        sube.setSubeId(Integer.valueOf(subeIdStr));
                         yeniKullanici.setSube(sube);
                     }
                     
@@ -73,7 +74,8 @@ public class AdminKullaniciYonetimServlet extends HttpServlet {
                                 // "Tüm Şubeler" seçildi → şubeyi kaldır
                                 k.setSube(null);
                             } else {
-                                Sube sube = subeDAO.findById(Integer.parseInt(updateSubeId));
+                                Sube sube = new Sube();
+                                sube.setSubeId(Integer.valueOf(updateSubeId));
                                 k.setSube(sube);
                             }
                         }

@@ -7,9 +7,9 @@ import java.sql.ResultSet;
 
 public class CheckAdminEncoding {
     public static void main(String[] args) {
-        String url = "jdbc:mysql://localhost:3306/bulaksu?zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Europe/Istanbul&useUnicode=true&characterEncoding=UTF-8";
+        String url = "jdbc:mysql://localhost:3306/bulak?zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Europe/Istanbul&useUnicode=true&characterEncoding=UTF-8";
         String user = "root";
-        String password = "E29RmAvIs";
+        String password = "Mine*2020";
 
         try (Connection conn = DriverManager.getConnection(url, user, password)) {
             String query = "SELECT ad_soyad FROM kullanicilar WHERE rol = 'ADMIN'";

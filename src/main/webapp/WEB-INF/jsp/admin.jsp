@@ -77,6 +77,16 @@
                     </c:forEach>
                 </select>
             </div>
+                
+                <div class="filter-group">
+                <label for="urunId">Ürün Filtresi</label>
+                <select name="urunId" id="urunId" class="admin-select" onchange="this.form.submit()">
+                    <option value="">Tüm Ürünler</option>
+                    <c:forEach items="${urunler}" var="urun">
+                        <option value="${urun.urunId}" <c:if test="${urun.urunId == urunId}">selected</c:if>>${urun.urunAdi}</option>
+                    </c:forEach>
+                </select>
+            </div>
 
             <div class="filter-group">
                 <label for="baslangicTarih">Başlangıç Tarihi</label>
@@ -185,6 +195,7 @@
         function exportExcel() {
             const form = document.getElementById('filterForm');
             const subeId = form.subeId ? form.subeId.value : '';
+            const urunId = form.urunId ? form.urunId.value : '';
             const bas = form.baslangicTarih ? form.baslangicTarih.value : '';
             const bit = form.bitisTarih ? form.bitisTarih.value : '';
             const stokDurum = form.stokDurum ? form.stokDurum.value : '';
@@ -192,6 +203,7 @@
 
             const params = new URLSearchParams();
             if(subeId) params.append('subeId', subeId);
+            if(urunId) params.append('urunId', urunId);
             if(bas) params.append('baslangicTarih', bas);
             if(bit) params.append('bitisTarih', bit);
             if(stokDurum) params.append('stokDurum', stokDurum);
