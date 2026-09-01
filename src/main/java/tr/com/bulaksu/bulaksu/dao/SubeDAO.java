@@ -2,6 +2,7 @@ package tr.com.bulaksu.bulaksu.dao;
 
 import tr.com.bulaksu.bulaksu.entity.Sube;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import java.util.List;
 
 public class SubeDAO {
@@ -35,10 +36,16 @@ public class SubeDAO {
 
     public void save(Sube sube) {
         EntityManager em = EntityManagerProvider.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
         try {
-            em.getTransaction().begin();
+            tx.begin();
             em.persist(sube);
-            em.getTransaction().commit();
+            tx.commit();
+        } catch (Exception e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            throw e;
         } finally {
             em.close();
         }
@@ -46,10 +53,16 @@ public class SubeDAO {
 
     public void update(Sube sube) {
         EntityManager em = EntityManagerProvider.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
         try {
-            em.getTransaction().begin();
+            tx.begin();
             em.merge(sube);
-            em.getTransaction().commit();
+            tx.commit();
+        } catch (Exception e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            throw e;
         } finally {
             em.close();
         }
@@ -57,13 +70,19 @@ public class SubeDAO {
 
     public void deleteById(int id) {
         EntityManager em = EntityManagerProvider.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
         try {
-            em.getTransaction().begin();
+            tx.begin();
             Sube sube = em.find(Sube.class, id);
             if (sube != null) {
                 em.remove(sube);
             }
-            em.getTransaction().commit();
+            tx.commit();
+        } catch (Exception e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            throw e;
         } finally {
             em.close();
         }

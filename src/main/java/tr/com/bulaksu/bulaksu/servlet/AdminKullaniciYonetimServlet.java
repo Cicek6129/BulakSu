@@ -41,12 +41,17 @@ public class AdminKullaniciYonetimServlet extends HttpServlet {
                     yeniKullanici.setSifre(KullaniciDAO.sha256(request.getParameter("sifre")));
                     yeniKullanici.setTelefon(request.getParameter("telefon"));
                     
-                    // Şube ataması
+                    // Şube ataması ve rol belirleme
                     String subeIdStr = request.getParameter("subeId");
                     if (subeIdStr != null && !subeIdStr.isEmpty()) {
-                        Sube sube = new Sube();
-                        sube.setSubeId(Integer.valueOf(subeIdStr));
+                        // Belirli bir şube seçildi → KASA rolü
+                        Sube sube = subeDAO.findById(Integer.parseInt(subeIdStr));
                         yeniKullanici.setSube(sube);
+                        yeniKullanici.setRol("KASA");
+                    } else {
+                        // "Tüm Şubeler (Admin)" seçildi → ADMIN rolü
+                        yeniKullanici.setSube(null);
+                        yeniKullanici.setRol("ADMIN");
                     }
                     
                     kullaniciDAO.save(yeniKullanici);
@@ -67,16 +72,17 @@ public class AdminKullaniciYonetimServlet extends HttpServlet {
                         String tel = request.getParameter("telefon");
                         if (tel != null && !tel.isEmpty()) k.setTelefon(tel);
                         
-                        // Şube ataması güncelleme
+                        // Şube ataması ve rol güncelleme
                         String updateSubeId = request.getParameter("subeId");
                         if (updateSubeId != null) {
                             if (updateSubeId.isEmpty()) {
-                                // "Tüm Şubeler" seçildi → şubeyi kaldır
+                                // "Tüm Şubeler (Admin)" seçildi → şubeyi kaldır, ADMIN rolü
                                 k.setSube(null);
+                                k.setRol("ADMIN");
                             } else {
-                                Sube sube = new Sube();
-                                sube.setSubeId(Integer.valueOf(updateSubeId));
+                                Sube sube = subeDAO.findById(Integer.parseInt(updateSubeId));
                                 k.setSube(sube);
+                                k.setRol("KASA");
                             }
                         }
                         

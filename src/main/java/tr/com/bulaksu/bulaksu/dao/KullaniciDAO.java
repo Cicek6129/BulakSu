@@ -1,9 +1,7 @@
 package tr.com.bulaksu.bulaksu.dao;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.Persistence;
 import tr.com.bulaksu.bulaksu.entity.Kullanici;
 
 import java.nio.charset.StandardCharsets;
@@ -14,10 +12,8 @@ import java.util.List;
 
 public class KullaniciDAO {
 
-    private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("bulaksu-PU");
-
     public void save(Kullanici kullanici) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = EntityManagerProvider.getEntityManager();
         EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
@@ -38,7 +34,7 @@ public class KullaniciDAO {
     }
 
     public void update(Kullanici kullanici) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = EntityManagerProvider.getEntityManager();
         EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
@@ -55,7 +51,7 @@ public class KullaniciDAO {
     }
 
     public Kullanici findById(Integer id) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = EntityManagerProvider.getEntityManager();
         try {
             return em.find(Kullanici.class, id);
         } finally {
@@ -64,7 +60,7 @@ public class KullaniciDAO {
     }
 
     public List<Kullanici> findAll() {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = EntityManagerProvider.getEntityManager();
         try {
             return em.createQuery("SELECT k FROM Kullanici k ORDER BY k.kayitTarihi DESC", Kullanici.class).getResultList();
         } catch (Exception e) {
@@ -75,7 +71,7 @@ public class KullaniciDAO {
     }
 
     public void deleteById(Integer id) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = EntityManagerProvider.getEntityManager();
         EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
@@ -95,7 +91,7 @@ public class KullaniciDAO {
     }
 
     public Kullanici findByEmailAndSifre(String emailOrUsername, String sifre) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = EntityManagerProvider.getEntityManager();
         try {
             String sifreHash = sha256(sifre);
             List<Kullanici> list = em.createQuery("SELECT k FROM Kullanici k WHERE (k.email = :login OR k.adSoyad = :login) AND k.sifre = :sifre AND k.aktif = true", Kullanici.class)
@@ -112,7 +108,7 @@ public class KullaniciDAO {
     }
 
     public Kullanici findByEmail(String email) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = EntityManagerProvider.getEntityManager();
         try {
             return em.createQuery("SELECT k FROM Kullanici k WHERE k.email = :email", Kullanici.class)
                     .setParameter("email", email)
