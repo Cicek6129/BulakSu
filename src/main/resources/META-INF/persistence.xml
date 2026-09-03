@@ -14,8 +14,8 @@
         
         <properties>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/bulak?zeroDateTimeBehavior=CONVERT_TO_NULL&amp;useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=Europe/Istanbul&amp;useUnicode=true&amp;characterEncoding=UTF-8"/>
-            <property name="jakarta.persistence.jdbc.user" value="root"/>
-            <property name="jakarta.persistence.jdbc.password" value="Mine*2020"/>
+            <property name="jakarta.persistence.jdbc.user" value="bulakuser"/>
+            <property name="jakarta.persistence.jdbc.password" value="Bulak*123"/>
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
             
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>

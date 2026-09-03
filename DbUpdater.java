@@ -5,8 +5,8 @@ import java.sql.Statement;
 public class DbUpdater {
     public static void main(String[] args) {
         String url = "jdbc:mysql://localhost:3306/bulaksu?useSSL=false&allowPublicKeyRetrieval=true";
-        String user = "root";
-        String pass = "E29RmAvIs";
+        String user = "bulakuser";
+        String pass = "Bulak*123";
 
         try (Connection conn = DriverManager.getConnection(url, user, pass);
              Statement stmt = conn.createStatement()) {
