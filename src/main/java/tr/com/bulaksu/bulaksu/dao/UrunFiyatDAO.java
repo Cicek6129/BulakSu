@@ -31,6 +31,17 @@ public class UrunFiyatDAO {
         }
     }
 
+    public List<UrunFiyat> findByUrunId(int urunId) {
+        EntityManager em = EntityManagerProvider.getEntityManager();
+        try {
+            return em.createQuery("SELECT uf FROM UrunFiyat uf JOIN FETCH uf.sube WHERE uf.urun.urunId = :urunId", UrunFiyat.class)
+                     .setParameter("urunId", urunId)
+                     .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
     public List<UrunFiyat> findAll() {
         EntityManager em = EntityManagerProvider.getEntityManager();
         try {

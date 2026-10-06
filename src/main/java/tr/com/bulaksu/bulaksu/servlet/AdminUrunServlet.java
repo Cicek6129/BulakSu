@@ -10,10 +10,13 @@ import tr.com.bulaksu.bulaksu.dao.UrunFiyatDAO;
 import tr.com.bulaksu.bulaksu.dao.SubeDAO;
 import tr.com.bulaksu.bulaksu.dao.SubeStokDAO;
 import tr.com.bulaksu.bulaksu.entity.Urun;
+import tr.com.bulaksu.bulaksu.entity.UrunFiyat;
 import tr.com.bulaksu.bulaksu.entity.Sube;
 import tr.com.bulaksu.bulaksu.entity.SubeStok;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.List;
 
 @WebServlet("/admin/urunler")
 public class AdminUrunServlet extends HttpServlet {
@@ -34,6 +37,31 @@ public class AdminUrunServlet extends HttpServlet {
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
                 response.getWriter().write(String.format("{\"mevcutStok\": %d, \"kritikStok\": %d}", stokData[0], stokData[1]));
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("{\"error\": \"" + e.getMessage() + "\"}");
+            }
+            return;
+        }
+
+        if ("getPrice".equals(action)) {
+            try {
+                int subeId = Integer.parseInt(request.getParameter("subeId"));
+                int urunId = Integer.parseInt(request.getParameter("urunId"));
+                UrunFiyat fiyat = urunFiyatDAO.findByUrunIdVeSubeId(urunId, subeId);
+
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                if (fiyat != null) {
+                    response.getWriter().write(String.format(
+                        "{\"found\": true, \"fiyatServis\": %s, \"fiyatGelAl\": %s, \"fiyatToptan\": %s}",
+                        fiyat.getFiyatServis().toPlainString(),
+                        fiyat.getFiyatGelAl().toPlainString(),
+                        fiyat.getFiyatToptan().toPlainString()));
+                } else {
+                    response.getWriter().write("{\"found\": false, \"fiyatServis\": 0, \"fiyatGelAl\": 0, \"fiyatToptan\": 0}");
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -117,6 +145,29 @@ public class AdminUrunServlet extends HttpServlet {
                         yeniStok.setMevcutStok(mevcutStok);
                         yeniStok.setKritikStokSeviyesi(kritikStok);
                         subeStokDAO.save(yeniStok);
+                    }
+                    break;
+                case "updatePrice":
+                    int fiyatSubeId = Integer.parseInt(request.getParameter("subeId"));
+                    int fiyatUrunId = Integer.parseInt(request.getParameter("urunId"));
+                    BigDecimal fiyatServis = new BigDecimal(request.getParameter("fiyatServis"));
+                    BigDecimal fiyatGelAl = new BigDecimal(request.getParameter("fiyatGelAl"));
+                    BigDecimal fiyatToptan = new BigDecimal(request.getParameter("fiyatToptan"));
+
+                    UrunFiyat existingFiyat = urunFiyatDAO.findByUrunIdVeSubeId(fiyatUrunId, fiyatSubeId);
+                    if (existingFiyat != null) {
+                        existingFiyat.setFiyatServis(fiyatServis);
+                        existingFiyat.setFiyatGelAl(fiyatGelAl);
+                        existingFiyat.setFiyatToptan(fiyatToptan);
+                        urunFiyatDAO.update(existingFiyat);
+                    } else {
+                        UrunFiyat yeniFiyat = new UrunFiyat();
+                        yeniFiyat.setUrun(urunDAO.findById(fiyatUrunId));
+                        yeniFiyat.setSube(subeDAO.findById(fiyatSubeId));
+                        yeniFiyat.setFiyatServis(fiyatServis);
+                        yeniFiyat.setFiyatGelAl(fiyatGelAl);
+                        yeniFiyat.setFiyatToptan(fiyatToptan);
+                        urunFiyatDAO.save(yeniFiyat);
                     }
                     break;
             }
