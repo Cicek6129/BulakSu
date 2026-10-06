@@ -63,6 +63,6 @@ public class AdminSubeYonetimServlet extends HttpServlet {
             e.printStackTrace();
         }
 
-        response.sendRedirect(request.getContextPath() + "/admin/subeler");
+        response.sendRedirect(request.getContextPath() + "/admin/subeler?success=true&mesaj=" + java.net.URLEncoder.encode("İşlem başarıyla tamamlandı.", "UTF-8"));
     }
 }

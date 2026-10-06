@@ -176,6 +176,6 @@ public class AdminUrunServlet extends HttpServlet {
             // Ignore for now
         }
 
-        response.sendRedirect(request.getContextPath() + "/admin/urunler");
+        response.sendRedirect(request.getContextPath() + "/admin/urunler?success=true&mesaj=" + java.net.URLEncoder.encode("İşlem başarıyla tamamlandı.", "UTF-8"));
     }
 }

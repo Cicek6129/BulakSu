@@ -32,6 +32,7 @@ public class SiparisSilServlet extends HttpServlet {
             e.printStackTrace();
         }
         
-        response.sendRedirect(returnUrl);
+        String separator = returnUrl.contains("?") ? "&" : "?";
+        response.sendRedirect(returnUrl + separator + "success=true&mesaj=" + java.net.URLEncoder.encode("Sipariş silindi.", "UTF-8"));
     }
 }

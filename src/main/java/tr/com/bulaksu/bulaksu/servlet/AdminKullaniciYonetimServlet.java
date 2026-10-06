@@ -98,6 +98,6 @@ public class AdminKullaniciYonetimServlet extends HttpServlet {
             e.printStackTrace();
         }
 
-        response.sendRedirect(request.getContextPath() + "/admin/kullanicilar");
+        response.sendRedirect(request.getContextPath() + "/admin/kullanicilar?success=true&mesaj=" + java.net.URLEncoder.encode("İşlem başarıyla tamamlandı.", "UTF-8"));
     }
 }

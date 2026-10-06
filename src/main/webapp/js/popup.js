@@ -251,9 +251,10 @@ var BsPopup = (function () {
         var params = new URLSearchParams(window.location.search);
 
         if (params.get('success') === 'true') {
+            var mesaj = params.get('mesaj');
             toast({
                 title: 'Başarılı!',
-                message: 'İşlem başarıyla tamamlandı.',
+                message: mesaj || 'İşlem başarıyla tamamlandı.',
                 type: 'success',
                 duration: 4000
             });

@@ -9,6 +9,7 @@
     <title>Şube Yönetimi - BulakSu</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css?v=3">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin.css?v=6">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/popup.css?v=2">
 </head>
 <body class="admin-mode">
     <div class="bg-particles">
@@ -166,5 +167,6 @@
         </div>
 
     </main>
+    <script src="${pageContext.request.contextPath}/js/popup.js?v=2"></script>
 </body>
 </html>

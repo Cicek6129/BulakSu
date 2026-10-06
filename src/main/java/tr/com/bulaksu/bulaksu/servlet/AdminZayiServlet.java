@@ -62,7 +62,7 @@ public class AdminZayiServlet extends HttpServlet {
                 if (miktar > 0) {
                     boolean success = subeStokDAO.zayiDus(subeId, urunId, miktar);
                     if (success) {
-                        response.sendRedirect(request.getContextPath() + "/admin/zayi?subeId=" + subeId + "&success=true");
+                        response.sendRedirect(request.getContextPath() + "/admin/zayi?subeId=" + subeId + "&success=true&mesaj=" + java.net.URLEncoder.encode("Zayi düşümü başarıyla kaydedildi.", "UTF-8"));
                         return;
                     } else {
                         response.sendRedirect(request.getContextPath() + "/admin/zayi?subeId=" + subeId + "&error=yetersiz");

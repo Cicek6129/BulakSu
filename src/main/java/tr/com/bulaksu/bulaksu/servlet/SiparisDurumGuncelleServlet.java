@@ -34,6 +34,7 @@ public class SiparisDurumGuncelleServlet extends HttpServlet {
             e.printStackTrace();
         }
         
-        response.sendRedirect(returnUrl);
+        String separator = returnUrl.contains("?") ? "&" : "?";
+        response.sendRedirect(returnUrl + separator + "success=true&mesaj=" + java.net.URLEncoder.encode("Sipariş durumu güncellendi.", "UTF-8"));
     }
 }

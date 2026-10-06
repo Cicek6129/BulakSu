@@ -9,6 +9,7 @@
     <title>Stok Yönetimi - BulakSu</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css?v=3">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin.css?v=6">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/popup.css?v=2">
 </head>
 <body class="admin-mode">
     <div class="bg-particles">
@@ -151,5 +152,6 @@
             window.location.href = '${pageContext.request.contextPath}/admin/stok/excel?' + params.toString();
         }
     </script>
+    <script src="${pageContext.request.contextPath}/js/popup.js?v=2"></script>
 </body>
 </html>
