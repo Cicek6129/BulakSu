@@ -83,7 +83,7 @@ public class UrunFiyatDAO {
         EntityManager em = EntityManagerProvider.getEntityManager();
         try {
             em.getTransaction().begin();
-            int updatedCount = em.createQuery("UPDATE UrunFiyat uf SET uf.fiyatGelAl = uf.fiyatGelAl * :carpan, uf.fiyatServis = uf.fiyatServis * :carpan, uf.fiyatToptan = uf.fiyatToptan * :carpan")
+            int updatedCount = em.createQuery("UPDATE UrunFiyat uf SET uf.fiyatGelAl = uf.fiyatGelAl * :carpan, uf.fiyatToptan = uf.fiyatToptan * :carpan")
                                  .setParameter("carpan", carpan)
                                  .executeUpdate();
             em.getTransaction().commit();

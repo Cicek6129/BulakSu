@@ -565,7 +565,6 @@ a {
   font-size: 0.85rem;
 }
 
-.type-badge.servis { background-color: var(--teal-100); color: var(--teal-800); }
 .type-badge.gelal  { background-color: #FCE7DD; color: var(--coral-dark); }
 .type-badge.toptan { background-color: var(--gold-100); color: var(--gold-dark); }
 
@@ -1202,10 +1201,6 @@ a {
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
-.kiosk-btn-servis {
-  background: linear-gradient(135deg, #0D453F, #11594F);
-}
-
 .kiosk-btn-gelal {
   background: linear-gradient(135deg, #C2410C, #E1552B);
 }
@@ -1305,11 +1300,6 @@ footer {
   border-radius: 100px;
   font-weight: 600;
   flex-shrink: 0;
-}
-.compact-bar-badge.badge-servis {
-  background: rgba(255,255,255,0.15);
-  color: #fff;
-  border: 1px solid rgba(255,255,255,0.25);
 }
 .compact-bar-badge.badge-gelal {
   background: rgba(225,85,43,0.25);

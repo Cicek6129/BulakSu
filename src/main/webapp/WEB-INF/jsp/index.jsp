@@ -86,12 +86,6 @@
     <main class="kiosk-main">
 
         <div class="kiosk-buttons">
-            <button class="kiosk-btn kiosk-btn-servis" onclick="proceedToProducts('S')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M5 17h14M5 17a2 2 0 1 0 4 0M5 17a2 2 0 1 1 4 0m6 0a2 2 0 1 0 4 0m-4 0a2 2 0 1 1 4 0M3 17V9l2-5h9l3 5h2a2 2 0 0 1 2 2v6h-2M3 17h2M14 9V4"></path>
-                </svg>
-                <span>Servis</span>
-            </button>
 
             <button class="kiosk-btn kiosk-btn-gelal" onclick="proceedToProducts('G')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">

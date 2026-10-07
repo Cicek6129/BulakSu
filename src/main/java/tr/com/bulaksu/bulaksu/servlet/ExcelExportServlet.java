@@ -137,7 +137,6 @@ public class ExcelExportServlet extends HttpServlet {
                         String readableSiparisTipi = "";
                         if (siparisTipiStr != null) {
                             switch (siparisTipiStr) {
-                                case "S": readableSiparisTipi = "Servis"; break;
                                 case "G": readableSiparisTipi = "Gel-Al"; break;
                                 case "T": readableSiparisTipi = "Toptan"; break;
                                 default: readableSiparisTipi = siparisTipiStr; break;

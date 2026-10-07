@@ -20,12 +20,10 @@
 
         <span class="compact-bar-badge
             <c:choose>
-                <c:when test="${tip == 'S'}"> badge-servis</c:when>
                 <c:when test="${tip == 'G'}"> badge-gelal</c:when>
                 <c:when test="${tip == 'T'}"> badge-toptan</c:when>
             </c:choose>">
             <c:choose>
-                <c:when test="${tip == 'S'}">Servis</c:when>
                 <c:when test="${tip == 'G'}">Gel Al</c:when>
                 <c:when test="${tip == 'T'}">Toptan</c:when>
             </c:choose>
@@ -75,7 +73,6 @@
                         <c:if test="${fiyat.urun.urunId == urun.urunId}">
                             <c:set var="fiyatBulundu" value="true" />
                             <c:choose>
-                                <c:when test="${tip == 'S'}"><c:set var="guncelFiyat" value="${fiyat.fiyatServis}" /></c:when>
                                 <c:when test="${tip == 'G'}"><c:set var="guncelFiyat" value="${fiyat.fiyatGelAl}" /></c:when>
                                 <c:when test="${tip == 'T'}"><c:set var="guncelFiyat" value="${fiyat.fiyatToptan}" /></c:when>
                             </c:choose>

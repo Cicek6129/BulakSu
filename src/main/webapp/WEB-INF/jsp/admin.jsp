@@ -110,9 +110,6 @@
             <button type="button" class="tip-filter-btn ${empty siparisTipi ? 'active' : ''}" onclick="filterByTip('')">
                 Tümü
             </button>
-            <button type="button" class="tip-filter-btn tip-servis ${siparisTipi == 'S' ? 'active' : ''}" onclick="filterByTip('S')">
-                🚚 Servis
-            </button>
             <button type="button" class="tip-filter-btn tip-gelal ${siparisTipi == 'G' ? 'active' : ''}" onclick="filterByTip('G')">
                 🏠 Gel Al
             </button>
@@ -149,7 +146,7 @@
                                             <span class="item-name">${detay.urun.urunAdi}</span>
                                             <span class="item-price">₺${detay.toplamFiyat}</span>
                                             <span class="item-type type-${fn:toLowerCase(detay.siparisTipi)}">
-                                                ${detay.siparisTipi == 'S' ? 'Servis' : (detay.siparisTipi == 'G' ? 'Gel-Al' : 'Toptan')}
+                                                ${detay.siparisTipi == 'G' ? 'Gel-Al' : 'Toptan'}
                                                 · birim ₺${detay.birimFiyat}
                                             </span>
                                         </li>

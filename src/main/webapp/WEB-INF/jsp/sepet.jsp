@@ -104,7 +104,6 @@
             text-transform: uppercase;
             white-space: nowrap;
         }
-        .badge-s { background: #E2F1EC; color: #11594F; }
         .badge-g { background: #FBE7DE; color: #C44520; }
         .badge-t { background: #FBF1DD; color: #8B6914; }
         .cart-item-right {
@@ -276,7 +275,7 @@
             </a>
         </div>
 
-        <span class="compact-bar-badge badge-servis">Sipariş</span>
+        <span class="compact-bar-badge">Sipariş</span>
 
         <div class="compact-bar-sube">
             <a href="<%= request.getContextPath() %>/anasayfa" style="color: #fff; font-size: 0.85rem; font-weight: 500; text-decoration: none; display: flex; align-items: center; gap: 4px;">
@@ -323,13 +322,11 @@
         }
 
         function tipLabel(tip) {
-            if (tip === 'S') return 'Servis';
             if (tip === 'G') return 'Gel Al';
             if (tip === 'T') return 'Toptan';
             return tip;
         }
         function tipBadgeClass(tip) {
-            if (tip === 'S') return 'badge-s';
             if (tip === 'G') return 'badge-g';
             if (tip === 'T') return 'badge-t';
             return '';

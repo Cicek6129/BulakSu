@@ -469,7 +469,6 @@ body.admin-mode {
 }
 
 /* Specific colors for specific types when active */
-.tip-filter-btn.tip-servis.active { background: var(--admin-primary); border-color: var(--admin-primary); box-shadow: 0 4px 12px rgba(17, 89, 79, 0.25); }
 .tip-filter-btn.tip-gelal.active { background: var(--admin-accent); border-color: var(--admin-accent); box-shadow: 0 4px 12px rgba(225, 85, 43, 0.25); }
 .tip-filter-btn.tip-toptan.active { background: var(--admin-gold); border-color: var(--admin-gold); box-shadow: 0 4px 12px rgba(185, 134, 46, 0.25); }
 

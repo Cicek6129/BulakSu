@@ -55,12 +55,11 @@ public class AdminUrunServlet extends HttpServlet {
                 response.setCharacterEncoding("UTF-8");
                 if (fiyat != null) {
                     response.getWriter().write(String.format(
-                        "{\"found\": true, \"fiyatServis\": %s, \"fiyatGelAl\": %s, \"fiyatToptan\": %s}",
-                        fiyat.getFiyatServis().toPlainString(),
+                        "{\"found\": true, \"fiyatGelAl\": %s, \"fiyatToptan\": %s}",
                         fiyat.getFiyatGelAl().toPlainString(),
                         fiyat.getFiyatToptan().toPlainString()));
                 } else {
-                    response.getWriter().write("{\"found\": false, \"fiyatServis\": 0, \"fiyatGelAl\": 0, \"fiyatToptan\": 0}");
+                    response.getWriter().write("{\"found\": false, \"fiyatGelAl\": 0, \"fiyatToptan\": 0}");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -150,13 +149,11 @@ public class AdminUrunServlet extends HttpServlet {
                 case "updatePrice":
                     int fiyatSubeId = Integer.parseInt(request.getParameter("subeId"));
                     int fiyatUrunId = Integer.parseInt(request.getParameter("urunId"));
-                    BigDecimal fiyatServis = new BigDecimal(request.getParameter("fiyatServis"));
                     BigDecimal fiyatGelAl = new BigDecimal(request.getParameter("fiyatGelAl"));
                     BigDecimal fiyatToptan = new BigDecimal(request.getParameter("fiyatToptan"));
 
                     UrunFiyat existingFiyat = urunFiyatDAO.findByUrunIdVeSubeId(fiyatUrunId, fiyatSubeId);
                     if (existingFiyat != null) {
-                        existingFiyat.setFiyatServis(fiyatServis);
                         existingFiyat.setFiyatGelAl(fiyatGelAl);
                         existingFiyat.setFiyatToptan(fiyatToptan);
                         urunFiyatDAO.update(existingFiyat);
@@ -164,7 +161,6 @@ public class AdminUrunServlet extends HttpServlet {
                         UrunFiyat yeniFiyat = new UrunFiyat();
                         yeniFiyat.setUrun(urunDAO.findById(fiyatUrunId));
                         yeniFiyat.setSube(subeDAO.findById(fiyatSubeId));
-                        yeniFiyat.setFiyatServis(fiyatServis);
                         yeniFiyat.setFiyatGelAl(fiyatGelAl);
                         yeniFiyat.setFiyatToptan(fiyatToptan);
                         urunFiyatDAO.save(yeniFiyat);

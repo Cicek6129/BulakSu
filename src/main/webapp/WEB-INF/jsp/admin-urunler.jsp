@@ -163,7 +163,7 @@
             <div class="pm-card highlight-card">
                 <div class="pm-card-header">
                     <h3>💰 Fiyat Yönetimi</h3>
-                    <p>Şube bazında ürün fiyatlarını ekleyin veya güncelleyin (Servis / Gel-Al / Toptan)</p>
+                    <p>Şube bazında ürün fiyatlarını ekleyin veya güncelleyin (Gel-Al / Toptan)</p>
                 </div>
                 <div class="pm-card-body">
                     <form action="${pageContext.request.contextPath}/admin/urunler" method="POST" class="pm-form">
@@ -193,26 +193,20 @@
 
                         <div id="fiyatBilgiKutusu" style="display: none; padding: 0.6rem 0.8rem; background: var(--admin-primary-tint); border-radius: var(--admin-radius-sm); font-size: 0.82rem; color: var(--admin-primary-deep);">
                             <strong>Mevcut Fiyatlar:</strong> 
-                            Servis: <span id="mevcutServis">—</span> ₺ | 
                             Gel-Al: <span id="mevcutGelAl">—</span> ₺ | 
                             Toptan: <span id="mevcutToptan">—</span> ₺
                         </div>
 
                         <div class="pm-card-body double-col" style="padding: 0;">
                             <div class="form-group">
-                                <label>Servis Fiyatı (₺)</label>
-                                <input type="number" name="fiyatServis" id="inputFiyatServis" class="admin-input" min="0" step="0.01" value="0.00" required>
-                            </div>
-
-                            <div class="form-group">
                                 <label>Gel-Al Fiyatı (₺)</label>
                                 <input type="number" name="fiyatGelAl" id="inputFiyatGelAl" class="admin-input" min="0" step="0.01" value="0.00" required>
                             </div>
-                        </div>
 
-                        <div class="form-group">
-                            <label>Toptan Fiyatı (₺)</label>
-                            <input type="number" name="fiyatToptan" id="inputFiyatToptan" class="admin-input" min="0" step="0.01" value="0.00" required>
+                            <div class="form-group">
+                                <label>Toptan Fiyatı (₺)</label>
+                                <input type="number" name="fiyatToptan" id="inputFiyatToptan" class="admin-input" min="0" step="0.01" value="0.00" required>
+                            </div>
                         </div>
                         
                         <button type="submit" class="admin-btn admin-btn-warning" style="width: 100%; margin-top: 10px;">💰 Fiyatı Kaydet / Güncelle</button>
@@ -292,11 +286,9 @@
         // ---- Fiyat AJAX ----
         const fiyatSubeSelect = document.getElementById('fiyatSubeId');
         const fiyatUrunSelect = document.getElementById('fiyatUrunId');
-        const inputFiyatServis = document.getElementById('inputFiyatServis');
         const inputFiyatGelAl = document.getElementById('inputFiyatGelAl');
         const inputFiyatToptan = document.getElementById('inputFiyatToptan');
         const fiyatBilgiKutusu = document.getElementById('fiyatBilgiKutusu');
-        const mevcutServis = document.getElementById('mevcutServis');
         const mevcutGelAl = document.getElementById('mevcutGelAl');
         const mevcutToptan = document.getElementById('mevcutToptan');
 
@@ -310,13 +302,11 @@
                     .then(data => {
                         if (data.found) {
                             fiyatBilgiKutusu.style.display = 'block';
-                            mevcutServis.textContent = parseFloat(data.fiyatServis).toFixed(2);
                             mevcutGelAl.textContent = parseFloat(data.fiyatGelAl).toFixed(2);
                             mevcutToptan.textContent = parseFloat(data.fiyatToptan).toFixed(2);
                         } else {
                             fiyatBilgiKutusu.style.display = 'none';
                         }
-                        inputFiyatServis.value = parseFloat(data.fiyatServis).toFixed(2);
                         inputFiyatGelAl.value = parseFloat(data.fiyatGelAl).toFixed(2);
                         inputFiyatToptan.value = parseFloat(data.fiyatToptan).toFixed(2);
                     })
@@ -325,7 +315,6 @@
                         fiyatBilgiKutusu.style.display = 'none';
                     });
             } else {
-                inputFiyatServis.value = '0.00';
                 inputFiyatGelAl.value = '0.00';
                 inputFiyatToptan.value = '0.00';
                 fiyatBilgiKutusu.style.display = 'none';

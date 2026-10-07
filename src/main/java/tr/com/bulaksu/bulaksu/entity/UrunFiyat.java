@@ -21,9 +21,6 @@ public class UrunFiyat {
     @JoinColumn(name = "sube_id")
     private Sube sube;
 
-    @Column(name = "fiyat_servis", nullable = false, precision = 10, scale = 2)
-    private BigDecimal fiyatServis = BigDecimal.ZERO;
-
     @Column(name = "fiyat_gel_al", nullable = false, precision = 10, scale = 2)
     private BigDecimal fiyatGelAl = BigDecimal.ZERO;
 
@@ -57,14 +54,6 @@ public class UrunFiyat {
 
     public void setSube(Sube sube) {
         this.sube = sube;
-    }
-
-    public BigDecimal getFiyatServis() {
-        return fiyatServis;
-    }
-
-    public void setFiyatServis(BigDecimal fiyatServis) {
-        this.fiyatServis = fiyatServis;
     }
 
     public BigDecimal getFiyatGelAl() {

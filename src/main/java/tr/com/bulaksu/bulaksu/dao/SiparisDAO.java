@@ -213,7 +213,7 @@ public class SiparisDAO {
      * @param subeId Şube ID (null = tüm şubeler)
      * @param baslangic Başlangıç tarihi (null = filtresiz)
      * @param bitis Bitiş tarihi (null = filtresiz)
-     * @param siparisTipi Sipariş tipi: "S" (Servis), "G" (Gel Al), "T" (Toptan)
+     * @param siparisTipi Sipariş tipi: "G" (Gel Al), "T" (Toptan)
      * (null = tümü)
      */
     @SuppressWarnings("unchecked")
